@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, FileText, Settings } from 'lucide-react';
+import { Home, FileText, Settings, LogOut } from 'lucide-react';
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const AdminNavbar = () => {
           <Button 
             variant="ghost" 
             className="text-white hover:bg-slate-800"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/admin')}
           >
             <Home className="h-5 w-5 mr-2" />
             Dashboard
@@ -27,7 +27,7 @@ const AdminNavbar = () => {
           <Button 
             variant="ghost"
             className="text-white hover:bg-slate-800"
-            onClick={() => navigate('/vehicles')}
+            onClick={() => navigate('/admin')}
           >
             <FileText className="h-5 w-5 mr-2" />
             Inventory
@@ -36,10 +36,19 @@ const AdminNavbar = () => {
           <Button 
             variant="ghost"
             className="text-white hover:bg-slate-800"
-            onClick={() => navigate('/settings')}
+            onClick={() => window.alert('Settings page not yet implemented')}
           >
             <Settings className="h-5 w-5 mr-2" />
             Settings
+          </Button>
+          
+          <Button 
+            variant="ghost"
+            className="text-white hover:bg-slate-800"
+            onClick={() => navigate('/')}
+          >
+            <LogOut className="h-5 w-5 mr-2" />
+            Visit Site
           </Button>
         </div>
       </div>

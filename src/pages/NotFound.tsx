@@ -15,19 +15,41 @@ const NotFound = () => {
     );
   }, [location.pathname]);
 
+  const isAdminPath = location.pathname.startsWith('/admin');
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
         <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
         <p className="text-xl text-gray-600 mb-8">
-          Oops! The page you are looking for couldn't be found.
+          Oops! A página que você está procurando não pôde ser encontrada.
         </p>
-        <Button
-          onClick={() => navigate('/')}
-          className="px-6 py-2"
-        >
-          Return to Dashboard
-        </Button>
+        <div className="space-y-4">
+          <Button
+            onClick={() => navigate(isAdminPath ? '/admin' : '/')}
+            className="px-6 py-2 w-full"
+          >
+            {isAdminPath ? 'Voltar para o Dashboard' : 'Voltar para o Início'}
+          </Button>
+          
+          {isAdminPath ? (
+            <Button
+              variant="outline"
+              onClick={() => navigate('/')}
+              className="px-6 py-2 w-full"
+            >
+              Ir para o Site
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => navigate('/admin')}
+              className="px-6 py-2 w-full"
+            >
+              Ir para o Admin
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
