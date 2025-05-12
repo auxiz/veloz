@@ -22,7 +22,7 @@ const AdminNavbar = () => {
         
         <div className="flex space-x-2">
           <Button 
-            variant="veloz-outline" 
+            variant="outline" 
             size="sm"
             onClick={() => navigate('/admin')}
             className="font-bold"
@@ -31,7 +31,7 @@ const AdminNavbar = () => {
           </Button>
           
           <Button 
-            variant="veloz-outline"
+            variant="outline"
             size="sm"
             onClick={() => navigate('/admin')}
             className="font-bold"
@@ -40,7 +40,7 @@ const AdminNavbar = () => {
           </Button>
           
           <Button 
-            variant="veloz-outline"
+            variant="outline"
             size="sm"
             onClick={() => window.alert('Settings page not yet implemented')}
             className="font-bold"

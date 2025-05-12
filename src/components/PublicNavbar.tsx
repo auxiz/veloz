@@ -54,7 +54,7 @@ const PublicNavbar = () => {
               variant="ghost" 
               size="sm"
               onClick={toggleMobileMenu}
-              className="p-2 text-veloz-white hover:bg-veloz-black"
+              className="p-2 text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black"
             >
               {mobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -70,28 +70,28 @@ const PublicNavbar = () => {
           <div className="md:hidden py-4 space-y-2 border-t border-veloz-yellow/20">
             <Link 
               to="/" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               to="/vehicles" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Car className="h-5 w-5 mr-2" /> Veículos
             </Link>
             <Link 
               to="/about" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Info className="h-5 w-5 mr-2" /> Sobre nós
             </Link>
             <Link 
               to="/contact" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Mail className="h-5 w-5 mr-2" /> Contato
@@ -99,7 +99,7 @@ const PublicNavbar = () => {
             <div className="px-3 py-3">
               <Button 
                 className="w-full font-bold"
-                variant="veloz"
+                variant="default"
                 onClick={() => {
                   window.alert('Simulação de Financiamento em desenvolvimento!');
                   setMobileMenuOpen(false);

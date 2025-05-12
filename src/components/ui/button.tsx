@@ -10,18 +10,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-black",
+        ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-black",
+        link: "text-veloz-yellow underline-offset-4 hover:underline",
         veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
-        "veloz-outline": "border-2 border-veloz-yellow bg-transparent text-veloz-yellow hover:bg-veloz-yellow/10 font-bold",
-        "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-black/80 font-bold shadow-md",
+        "veloz-outline": "border-2 border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black font-bold",
+        "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold shadow-md",
       },
       size: {
         default: "h-10 px-4 py-2",
