@@ -125,17 +125,17 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="w-full max-w-3xl mx-auto bg-gray-800 border-gray-700 text-gray-100">
       <CardHeader>
-        <CardTitle className="text-xl">Import Vehicles from XML</CardTitle>
+        <CardTitle className="text-xl text-veloz-yellow">Import Vehicles from XML</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+          <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center bg-gray-900 hover:border-veloz-yellow/50 transition-colors">
             <label className="cursor-pointer">
               <div className="flex flex-col items-center space-y-2">
-                <FileUp className="h-12 w-12 text-gray-400" />
-                <span className="text-gray-500">
+                <FileUp className="h-12 w-12 text-veloz-yellow" />
+                <span className="text-gray-400">
                   {file ? file.name : "Click to select an XML file or drag and drop"}
                 </span>
               </div>
@@ -150,7 +150,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
           </div>
 
           {errors.length > 0 && (
-            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded">
+            <div className="bg-red-900/20 border border-red-700 text-red-200 p-3 rounded">
               <h4 className="font-semibold mb-1">Errors:</h4>
               <ul className="list-disc list-inside">
                 {errors.map((error, index) => (
@@ -166,7 +166,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
                 <span>Uploading...</span>
                 <span>{progress}%</span>
               </div>
-              <Progress value={progress} />
+              <Progress value={progress} className="bg-gray-700" />
             </div>
           )}
         </div>
@@ -175,6 +175,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
         <Button 
           onClick={handleUpload} 
           disabled={!file || isUploading}
+          variant="veloz"
           className="w-full"
         >
           {isUploading ? "Processing..." : "Import Vehicles"}

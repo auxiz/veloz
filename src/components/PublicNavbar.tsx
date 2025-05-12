@@ -18,7 +18,11 @@ const PublicNavbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo and brand */}
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-veloz-white">VELOZ<span className="text-veloz-yellow">MOTORS</span></span>
+            <img 
+              src="/veloz-logo.png" 
+              alt="VELOZ MOTORS" 
+              className="h-12 sm:h-14"
+            />
           </Link>
           
           {/* Desktop navigation */}
@@ -39,7 +43,8 @@ const PublicNavbar = () => {
               Contato
             </Link>
             <Button 
-              className="ml-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 font-medium"
+              className="ml-4"
+              variant="veloz"
               onClick={() => window.alert('Simulação de Financiamento em desenvolvimento!')}
             >
               <CreditCard className="h-5 w-5 mr-2" />
@@ -97,7 +102,8 @@ const PublicNavbar = () => {
             </Link>
             <div className="px-3 py-3">
               <Button 
-                className="w-full bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 font-medium"
+                className="w-full"
+                variant="veloz"
                 onClick={() => {
                   window.alert('Simulação de Financiamento em desenvolvimento!');
                   setMobileMenuOpen(false);

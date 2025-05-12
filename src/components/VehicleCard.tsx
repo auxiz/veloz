@@ -27,8 +27,8 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
   };
   
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
-      <div className="aspect-[16/9] relative bg-gray-100 overflow-hidden">
+    <Card className="h-full flex flex-col overflow-hidden bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300">
+      <div className="aspect-[16/9] relative bg-gray-900 overflow-hidden">
         {vehicle.photos && vehicle.photos.length > 0 ? (
           <img 
             src={vehicle.photos[0]} 
@@ -49,26 +49,26 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
       
       <CardHeader className="pb-2">
         <div>
-          <h3 className="text-lg font-bold">{vehicle.brand} {vehicle.model}</h3>
-          <p className="text-gray-500">{vehicle.year} • {vehicle.mileage} km</p>
+          <h3 className="text-lg font-bold text-white">{vehicle.brand} {vehicle.model}</h3>
+          <p className="text-gray-400">{vehicle.year} • {vehicle.mileage} km</p>
         </div>
       </CardHeader>
       
       <CardContent className="pb-2 flex-grow">
-        <p className="text-2xl font-bold text-primary mb-2">
+        <p className="text-2xl font-bold text-veloz-yellow mb-2">
           {formatCurrency(vehicle.price)}
         </p>
         <div className="flex flex-wrap gap-1 mt-2">
-          <Badge variant="outline">{vehicle.fuelType}</Badge>
-          <Badge variant="outline">{vehicle.transmission}</Badge>
-          <Badge variant="outline">{vehicle.color}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200">{vehicle.fuelType}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200">{vehicle.transmission}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200">{vehicle.color}</Badge>
         </div>
       </CardContent>
       
       <CardFooter className="pt-0">
         <div className="flex gap-2 w-full">
           <Button 
-            variant="outline" 
+            variant="veloz-outline" 
             size="sm" 
             className="flex-1"
             onClick={() => onView(vehicle)}
@@ -76,7 +76,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
             <Eye className="h-4 w-4 mr-1" /> View
           </Button>
           <Button 
-            variant="outline" 
+            variant="veloz" 
             size="sm" 
             className="flex-1"
             onClick={() => onEdit(vehicle)}

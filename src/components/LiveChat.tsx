@@ -38,7 +38,7 @@ const LiveChat = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen ? (
-        <div className="bg-veloz-black border border-veloz-yellow/20 rounded-lg shadow-lg w-80 sm:w-96 overflow-hidden flex flex-col">
+        <div className="bg-veloz-black border border-veloz-yellow/20 rounded-lg shadow-2xl w-80 sm:w-96 overflow-hidden flex flex-col transition-all duration-300 animate-fade-in">
           <div className="bg-veloz-yellow p-4 flex justify-between items-center">
             <h3 className="font-bold text-veloz-black">Chat Online</h3>
             <Button 
@@ -55,10 +55,10 @@ const LiveChat = () => {
             {messages.map((msg, index) => (
               <div 
                 key={index} 
-                className={`p-3 rounded-lg max-w-[80%] ${
+                className={`p-3 rounded-lg max-w-[80%] shadow-md ${
                   msg.isUser 
-                    ? 'bg-veloz-yellow text-veloz-black self-end' 
-                    : 'bg-gray-800 text-white self-start'
+                    ? 'bg-veloz-yellow text-veloz-black self-end animate-fade-in' 
+                    : 'bg-gray-800 text-white self-start animate-fade-in'
                 }`}
               >
                 {msg.text}
@@ -76,7 +76,8 @@ const LiveChat = () => {
             />
             <Button 
               type="submit" 
-              className="bg-veloz-yellow text-veloz-black rounded-l-none"
+              className="rounded-l-none"
+              variant="veloz"
             >
               <Send className="h-5 w-5" />
             </Button>
@@ -85,7 +86,8 @@ const LiveChat = () => {
       ) : (
         <Button 
           onClick={toggleChat} 
-          className="rounded-full bg-veloz-yellow text-veloz-black w-14 h-14 flex items-center justify-center shadow-lg hover:bg-veloz-yellow/90"
+          className="rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:-translate-y-1 transition-transform duration-300"
+          variant="veloz"
         >
           <MessageSquare className="h-6 w-6" />
         </Button>
