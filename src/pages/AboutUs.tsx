@@ -17,7 +17,7 @@ const AboutUs = () => {
         <div className="container mx-auto px-4 py-24 relative z-10">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-veloz-yellow">Sobre a VELOZ MOTORS</h1>
-            <p className="text-xl mb-8 text-white/90">Há mais de 15 anos no mercado, a VELOZ MOTORS se dedica a oferecer os melhores veículos usados com total transparência e qualidade garantida.</p>
+            <p className="text-xl mb-8 text-white/90">Fundada em 2023, a VELOZ MOTORS se dedica a oferecer os melhores veículos usados com total transparência e qualidade garantida.</p>
           </div>
         </div>
       </div>
