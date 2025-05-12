@@ -77,9 +77,9 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-bold mb-2 text-white">Endereço</h3>
               <p className="text-gray-400">
-                Av. Principal, 1234<br />
-                São Paulo, SP<br />
-                CEP: 01234-567
+                Av. Sara Kubitschek, Qd 25 - Lt 28<br />
+                Serrinha, Luziânia - GO<br />
+                CEP: 72815-450
               </p>
             </div>
             
@@ -89,8 +89,7 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-bold mb-2 text-white">Telefone</h3>
               <p className="text-gray-400">
-                (11) 99999-9999<br />
-                (11) 5555-5555
+                (61) 99526-1897
               </p>
               <p className="text-gray-500 text-sm mt-2">
                 WhatsApp disponível
@@ -103,11 +102,7 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-bold mb-2 text-white">E-mail</h3>
               <p className="text-gray-400">
-                contato@velozmotors.com<br />
-                vendas@velozmotors.com
-              </p>
-              <p className="text-gray-500 text-sm mt-2">
-                Resposta em até 24h
+                Em breve
               </p>
             </div>
             
@@ -117,7 +112,7 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-bold mb-2 text-white">Horário</h3>
               <p className="text-gray-400">
-                Segunda a Sexta: 8h às 18h<br />
+                Segunda a Sexta: 8h às 17:30<br />
                 Sábado: 8h às 14h<br />
                 Domingo: Fechado
               </p>
@@ -213,7 +208,7 @@ const Contact = () => {
               <h2 className="text-2xl font-bold mb-6 text-veloz-yellow">Nossa Localização</h2>
               <div className="bg-gray-800 rounded-lg overflow-hidden h-[400px]">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d467692.0488551513!2d-46.92508336869791!3d-23.681531449934733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce448183a461d1%3A0x9ba94b08ff335bae!2zU8OjbyBQYXVsbywgU1A!5e0!3m2!1spt-BR!2sbr!4v1652368285463!5m2!1spt-BR!2sbr" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3840.4479919666455!2d-47.95888132394043!3d-16.24388573449001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9359591bc3ccb51d%3A0x794d3c1f82212f7c!2sAv.%20Sara%20Kubitschek%20-%20Luzi%C3%A2nia%2C%20GO%2C%2072815-450!5e0!3m2!1spt-BR!2sbr!4v1716383798012!5m2!1spt-BR!2sbr"
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
@@ -226,7 +221,7 @@ const Contact = () => {
               <div className="mt-4 bg-gray-800 p-4 rounded-lg">
                 <h3 className="font-semibold text-veloz-yellow">Como chegar</h3>
                 <p className="text-gray-400 mt-2">
-                  Estamos localizados na Avenida Principal, próximo ao Shopping Center. Fácil acesso por transporte público e amplo estacionamento disponível para clientes.
+                  Estamos localizados na Av. Sara Kubitschek, próximos ao bairro Serrinha. Fácil acesso e estacionamento disponível para clientes.
                 </p>
               </div>
             </div>
@@ -255,9 +250,9 @@ const Contact = () => {
             </div>
             
             <div className="bg-gray-800 p-6 rounded-lg">
-              <h3 className="font-bold text-white mb-2">É possível fazer test drive?</h3>
+              <h3 className="font-bold text-white mb-2">Há quanto tempo vocês existem?</h3>
               <p className="text-gray-400">
-                Absolutamente! Incentivamos nossos clientes a agendar um test drive para conhecer melhor o veículo de interesse.
+                A Veloz Motors foi fundada há 2 anos e 2 meses, com o objetivo de oferecer veículos de qualidade com ótimo custo-benefício.
               </p>
             </div>
             

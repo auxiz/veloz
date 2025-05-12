@@ -34,11 +34,11 @@ const Footer = () => {
             <address className="text-gray-400 not-italic space-y-3">
               <div className="flex items-center">
                 <MapPin className="h-5 w-5 text-veloz-yellow mr-2" />
-                <span>Av. Principal, 1234 - São Paulo, SP</span>
+                <span>Av. Sara Kubitschek, Qd 25 - Lt 28 - Serrinha, Luziânia - GO, 72815-450</span>
               </div>
               <div className="flex items-center">
                 <Phone className="h-5 w-5 text-veloz-yellow mr-2" />
-                <span>(11) 99999-9999</span>
+                <span>(61) 99526-1897</span>
               </div>
               <div className="mt-4">
                 <h5 className="text-veloz-white mb-2">Siga-nos</h5>
@@ -49,7 +49,7 @@ const Footer = () => {
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-veloz-yellow hover:text-veloz-yellow/80">
                     <Instagram className="h-6 w-6" />
                   </a>
-                  <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-veloz-yellow hover:text-veloz-yellow/80">
+                  <a href="https://wa.me/5561995261897" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-veloz-yellow hover:text-veloz-yellow/80">
                     <MessageSquare className="h-6 w-6" />
                   </a>
                 </div>
@@ -59,6 +59,7 @@ const Footer = () => {
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
           <p>&copy; {new Date().getFullYear()} VELOZMOTORS. Todos os direitos reservados.</p>
+          <p className="text-sm mt-1">CNPJ: 50.664.836/0001-69</p>
         </div>
       </div>
     </footer>
