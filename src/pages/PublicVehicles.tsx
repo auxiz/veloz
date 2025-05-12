@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import { Vehicle } from '@/types/vehicle';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import PublicNavbar from '@/components/PublicNavbar';
+import Footer from '@/components/Footer';
+import { Search, ChevronRight, Filter } from 'lucide-react';
 
 // This would come from an API in a real application
 const loadVehicles = (): Vehicle[] => {
@@ -26,6 +27,8 @@ const PublicVehicles = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [brandFilter, setBrandFilter] = useState('all');
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+  const [yearRange, setYearRange] = useState({ min: '', max: '' });
   
   useEffect(() => {
     // Simulate API call
@@ -55,6 +58,24 @@ const PublicVehicles = () => {
       results = results.filter(vehicle => vehicle.brand.toLowerCase() === brandFilter.toLowerCase());
     }
     
+    // Apply price range
+    if (priceRange.min) {
+      results = results.filter(vehicle => vehicle.price >= Number(priceRange.min));
+    }
+    
+    if (priceRange.max) {
+      results = results.filter(vehicle => vehicle.price <= Number(priceRange.max));
+    }
+    
+    // Apply year range
+    if (yearRange.min) {
+      results = results.filter(vehicle => vehicle.year >= Number(yearRange.min));
+    }
+    
+    if (yearRange.max) {
+      results = results.filter(vehicle => vehicle.year <= Number(yearRange.max));
+    }
+    
     // Apply sorting
     switch (sortBy) {
       case 'price-low':
@@ -74,45 +95,69 @@ const PublicVehicles = () => {
     }
     
     setFilteredVehicles(results);
-  }, [searchTerm, sortBy, brandFilter, vehicles]);
+  }, [searchTerm, sortBy, brandFilter, priceRange, yearRange, vehicles]);
   
   // Get unique brands for the filter
   const uniqueBrands = Array.from(new Set(vehicles.map(vehicle => vehicle.brand)));
   
+  const handleReset = () => {
+    setSearchTerm('');
+    setSortBy('newest');
+    setBrandFilter('all');
+    setPriceRange({ min: '', max: '' });
+    setYearRange({ min: '', max: '' });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-veloz-black text-white">
       <PublicNavbar />
       
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
           <div className="mb-4 md:mb-0">
-            <h1 className="text-3xl font-bold">Nossos Veículos</h1>
-            <p className="text-gray-600">Explore nossa seleção completa de veículos disponíveis</p>
+            <h1 className="text-3xl font-bold text-veloz-yellow">Nossos Veículos</h1>
+            <p className="text-gray-400">Explore nossa seleção completa de veículos disponíveis</p>
           </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Encontramos {filteredVehicles.length} veículos</p>
+          <div className="bg-gray-800 rounded-lg p-4 shadow-sm">
+            <p className="text-sm text-gray-300">Encontramos <span className="text-veloz-yellow font-semibold">{filteredVehicles.length}</span> veículos</p>
           </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Filters sidebar */}
-          <div className="bg-white p-6 rounded-lg shadow-sm h-fit">
-            <h2 className="text-lg font-semibold mb-4">Filtros</h2>
-            
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
-              <Input
-                type="text"
-                placeholder="Marca, modelo ou descrição"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          <div className="bg-gray-800 p-6 rounded-lg shadow-sm h-fit">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-veloz-yellow flex items-center">
+                <Filter className="h-5 w-5 mr-2" /> Filtros
+              </h2>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleReset}
+                className="text-gray-300 hover:text-white"
+              >
+                Limpar
+              </Button>
             </div>
             
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ordenar por</label>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Buscar</label>
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Marca, modelo ou descrição"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8 bg-gray-700 border-gray-600 text-white"
+                />
+              </div>
+            </div>
+            
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Ordenar por</label>
               <select
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                className="w-full rounded-md bg-gray-700 border-gray-600 text-white py-2 px-3"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
               >
@@ -123,10 +168,10 @@ const PublicVehicles = () => {
               </select>
             </div>
             
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Marca</label>
               <select
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                className="w-full rounded-md bg-gray-700 border-gray-600 text-white py-2 px-3"
                 value={brandFilter}
                 onChange={(e) => setBrandFilter(e.target.value)}
               >
@@ -137,16 +182,50 @@ const PublicVehicles = () => {
               </select>
             </div>
             
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Faixa de Preço</label>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={priceRange.min}
+                  onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+              </div>
+            </div>
+            
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Ano</label>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  type="number"
+                  placeholder="De"
+                  value={yearRange.min}
+                  onChange={(e) => setYearRange({ ...yearRange, min: e.target.value })}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+                <Input
+                  type="number"
+                  placeholder="Até"
+                  value={yearRange.max}
+                  onChange={(e) => setYearRange({ ...yearRange, max: e.target.value })}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+              </div>
+            </div>
+            
             <Button 
-              variant="outline" 
-              className="w-full mt-2"
-              onClick={() => {
-                setSearchTerm('');
-                setSortBy('newest');
-                setBrandFilter('all');
-              }}
+              className="w-full bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90"
             >
-              Limpar filtros
+              <Search className="mr-2 h-4 w-4" /> Aplicar Filtros
             </Button>
           </div>
           
@@ -154,59 +233,64 @@ const PublicVehicles = () => {
           <div className="lg:col-span-3">
             {loading ? (
               <div className="flex justify-center items-center h-64">
-                <p className="text-xl text-gray-500">Carregando veículos...</p>
+                <p className="text-xl text-gray-400">Carregando veículos...</p>
               </div>
             ) : filteredVehicles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredVehicles.map((vehicle) => (
-                  <Link to={`/vehicles/${vehicle.id}`} key={vehicle.id} className="hover:opacity-95 transition-opacity">
-                    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
-                      <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
+                  <Link to={`/vehicles/${vehicle.id}`} key={vehicle.id} className="group">
+                    <Card className="h-full overflow-hidden hover:border-veloz-yellow transition-colors bg-gray-800 border-gray-700 text-white">
+                      <div className="relative aspect-[16/10] overflow-hidden bg-gray-900">
                         {vehicle.photos && vehicle.photos.length > 0 ? (
                           <img 
                             src={vehicle.photos[0]} 
                             alt={`${vehicle.brand} ${vehicle.model}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="flex items-center justify-center h-full bg-gray-200">
+                          <div className="flex items-center justify-center h-full bg-gray-800">
                             <p className="text-gray-500">Sem imagem</p>
                           </div>
                         )}
-                        <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded text-sm font-medium text-slate-900">
+                        <div className="absolute top-2 right-2 bg-veloz-yellow px-2 py-1 rounded text-sm font-medium text-veloz-black">
                           {vehicle.status === 'available' ? 'Disponível' : vehicle.status}
                         </div>
                       </div>
                       <CardContent className="p-4">
-                        <h3 className="text-lg font-bold">{vehicle.brand} {vehicle.model}</h3>
+                        <h3 className="text-lg font-bold text-white">{vehicle.brand} {vehicle.model}</h3>
                         <div className="flex justify-between mt-2">
-                          <p className="text-gray-600">{vehicle.year}</p>
-                          <p className="font-bold text-lg">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
+                          <p className="text-gray-400">{vehicle.year}</p>
+                          <p className="font-bold text-lg text-veloz-yellow">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
-                          <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                          <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
                             {vehicle.transmission}
                           </span>
-                          <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                          <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
                             {vehicle.fuelType}
                           </span>
-                          <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                          <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
                             {vehicle.mileage.toLocaleString('pt-BR')} km
                           </span>
                         </div>
+                        <Button 
+                          className="w-full mt-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 flex items-center justify-center"
+                        >
+                          Saiba Mais <ChevronRight className="ml-1 h-4 w-4" />
+                        </Button>
                       </CardContent>
                     </Card>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-64 bg-white rounded-lg p-8 shadow-sm">
-                <p className="text-xl text-gray-500 text-center">Nenhum veículo encontrado com os filtros selecionados.</p>
-                <Button variant="outline" className="mt-4" onClick={() => {
-                  setSearchTerm('');
-                  setSortBy('newest');
-                  setBrandFilter('all');
-                }}>
+              <div className="flex flex-col items-center justify-center h-64 bg-gray-800 rounded-lg p-8 shadow-sm">
+                <p className="text-xl text-gray-400 text-center">Nenhum veículo encontrado com os filtros selecionados.</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4 border-veloz-yellow text-veloz-yellow hover:bg-veloz-yellow/10" 
+                  onClick={handleReset}
+                >
                   Limpar filtros
                 </Button>
               </div>
@@ -215,39 +299,7 @@ const PublicVehicles = () => {
         </div>
       </main>
       
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 mt-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">VehicleManager</h3>
-              <p className="text-slate-400">Sua concessionária de confiança para veículos novos e usados.</p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Links Rápidos</h4>
-              <ul className="space-y-2">
-                <li><Link to="/" className="text-slate-400 hover:text-white">Home</Link></li>
-                <li><Link to="/vehicles" className="text-slate-400 hover:text-white">Veículos</Link></li>
-                <li><Link to="/about" className="text-slate-400 hover:text-white">Sobre Nós</Link></li>
-                <li><Link to="/contact" className="text-slate-400 hover:text-white">Contato</Link></li>
-                <li><Link to="/admin" className="text-slate-400 hover:text-white">Login Admin</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contato</h4>
-              <address className="text-slate-400 not-italic">
-                <p>Av. Principal, 1234</p>
-                <p>São Paulo, SP</p>
-                <p className="mt-2">contato@vehiclemanager.com</p>
-                <p>(11) 99999-9999</p>
-              </address>
-            </div>
-          </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-500">
-            <p>&copy; {new Date().getFullYear()} VehicleManager. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

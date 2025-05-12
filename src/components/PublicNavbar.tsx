@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Car, Info, Mail, CreditCard } from 'lucide-react';
 
 const PublicNavbar = () => {
   const navigate = useNavigate();
@@ -13,26 +13,37 @@ const PublicNavbar = () => {
   };
   
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-veloz-black shadow-md">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo and brand */}
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-slate-900">VehicleManager</span>
+            <span className="text-2xl font-bold text-veloz-white">VELOZ<span className="text-veloz-yellow">MOTORS</span></span>
           </Link>
           
           {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/" className="px-3 py-2 text-slate-700 hover:text-slate-900">Home</Link>
-            <Link to="/vehicles" className="px-3 py-2 text-slate-700 hover:text-slate-900">Veículos</Link>
-            <Link to="/about" className="px-3 py-2 text-slate-700 hover:text-slate-900">Sobre Nós</Link>
-            <Link to="/contact" className="px-3 py-2 text-slate-700 hover:text-slate-900">Contato</Link>
+            <Link to="/" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors">
+              Home
+            </Link>
+            <Link to="/vehicles" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors flex items-center">
+              <Car className="h-4 w-4 mr-1" />
+              Veículos
+            </Link>
+            <Link to="/about" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors flex items-center">
+              <Info className="h-4 w-4 mr-1" />
+              Sobre nós
+            </Link>
+            <Link to="/contact" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors flex items-center">
+              <Mail className="h-4 w-4 mr-1" />
+              Contato
+            </Link>
             <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/admin')}
+              className="ml-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 font-medium"
+              onClick={() => window.alert('Simulação de Financiamento em desenvolvimento!')}
             >
-              Área Admin
+              <CreditCard className="h-5 w-5 mr-2" />
+              Simule seu Financiamento
             </Button>
           </div>
           
@@ -42,7 +53,7 @@ const PublicNavbar = () => {
               variant="ghost" 
               size="sm"
               onClick={toggleMobileMenu}
-              className="p-2"
+              className="p-2 text-veloz-white hover:bg-veloz-black"
             >
               {mobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -55,42 +66,47 @@ const PublicNavbar = () => {
         
         {/* Mobile menu, show/hide based on menu state */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-2 space-y-1">
+          <div className="md:hidden py-4 space-y-2 border-t border-veloz-yellow/20">
             <Link 
               to="/" 
-              className="block px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-md"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               to="/vehicles" 
-              className="block px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-md"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Veículos
+              <Car className="h-5 w-5 mr-2" /> Veículos
             </Link>
             <Link 
               to="/about" 
-              className="block px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-md"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Sobre Nós
+              <Info className="h-5 w-5 mr-2" /> Sobre nós
             </Link>
             <Link 
               to="/contact" 
-              className="block px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-md"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Contato
+              <Mail className="h-5 w-5 mr-2" /> Contato
             </Link>
-            <Link 
-              to="/admin" 
-              className="block px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-md"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Área Admin
-            </Link>
+            <div className="px-3 py-3">
+              <Button 
+                className="w-full bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 font-medium"
+                onClick={() => {
+                  window.alert('Simulação de Financiamento em desenvolvimento!');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <CreditCard className="h-5 w-5 mr-2" />
+                Simule seu Financiamento
+              </Button>
+            </div>
           </div>
         )}
       </div>

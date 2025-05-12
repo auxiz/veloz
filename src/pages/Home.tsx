@@ -4,11 +4,23 @@ import { Link } from 'react-router-dom';
 import { Vehicle } from '@/types/vehicle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import PublicNavbar from '@/components/PublicNavbar';
+import Footer from '@/components/Footer';
+import LiveChat from '@/components/LiveChat';
+import { Car, Search, MessageSquare, ChevronRight, CheckCircle } from 'lucide-react';
 
 const Home = () => {
   const [featuredVehicles, setFeaturedVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useState({
+    brand: '',
+    model: '',
+    priceMin: '',
+    priceMax: '',
+    yearMin: '',
+    yearMax: ''
+  });
 
   // In a real application, this would fetch from an API
   useEffect(() => {
@@ -29,23 +41,51 @@ const Home = () => {
     }, 500);
   }, []);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchParams({
+      ...searchParams,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // In a real application, this would filter and navigate to results
+    console.log('Search submitted with:', searchParams);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-veloz-black text-veloz-white">
       <PublicNavbar />
       
       {/* Hero Section */}
-      <div className="relative bg-slate-900 text-white">
+      <div className="relative bg-veloz-black text-white">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center opacity-20"></div>
-        <div className="container mx-auto px-4 py-24 relative z-10">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">Encontre o veículo dos seus sonhos</h1>
-            <p className="text-xl mb-8">Explore nossa seleção premium de veículos com os melhores preços e condições do mercado.</p>
-            <div className="flex flex-wrap gap-4">
-              <Button size="lg" asChild>
-                <Link to="/vehicles">Ver Veículos</Link>
+        <div className="container mx-auto px-4 py-24 sm:py-32 md:py-40 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-veloz-yellow">Encontre o carro dos seus sonhos na <span className="block sm:inline">VELOZ MOTORS</span></h1>
+            <p className="text-xl mb-8 text-veloz-white/90">Oferecemos uma seleção premium de veículos usados com garantia de procedência e as melhores condições do mercado.</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button 
+                size="lg" 
+                asChild 
+                className="bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 text-lg px-8"
+              >
+                <Link to="/vehicles">
+                  <Car className="mr-2 h-6 w-6" />
+                  Ver Carros
+                </Link>
               </Button>
-              <Button variant="outline" size="lg" className="bg-white/10 hover:bg-white/20">
-                Fale Conosco
+              <Button 
+                variant="outline" 
+                size="lg" 
+                asChild
+                className="bg-transparent border-veloz-yellow text-veloz-yellow hover:bg-veloz-yellow/10 text-lg px-8"
+              >
+                <Link to="/contact">
+                  <MessageSquare className="mr-2 h-6 w-6" />
+                  Fale Conosco
+                </Link>
               </Button>
             </div>
           </div>
@@ -53,103 +93,216 @@ const Home = () => {
       </div>
       
       {/* Featured Vehicles Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-12">
-          <div>
-            <h2 className="text-3xl font-bold">Veículos em Destaque</h2>
-            <p className="text-gray-600 mt-2">Nossa seleção de veículos premium</p>
-          </div>
-          <Button variant="outline" asChild>
-            <Link to="/vehicles">Ver Todos</Link>
-          </Button>
-        </div>
-        
-        {loading ? (
-          <div className="text-center py-20">
-            <p className="text-xl text-gray-500">Carregando veículos...</p>
-          </div>
-        ) : featuredVehicles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredVehicles.map((vehicle) => (
-              <Link to={`/vehicles/${vehicle.id}`} key={vehicle.id} className="hover:opacity-95 transition-opacity">
-                <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
-                    {vehicle.photos && vehicle.photos.length > 0 ? (
-                      <img 
-                        src={vehicle.photos[0]} 
-                        alt={`${vehicle.brand} ${vehicle.model}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full bg-gray-200">
-                        <p className="text-gray-500">Sem imagem</p>
-                      </div>
-                    )}
-                    <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded text-sm font-medium text-slate-900">
-                      {vehicle.status === 'available' ? 'Disponível' : vehicle.status}
-                    </div>
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="text-lg font-bold">{vehicle.brand} {vehicle.model}</h3>
-                    <div className="flex justify-between mt-2">
-                      <p className="text-gray-600">{vehicle.year}</p>
-                      <p className="font-bold text-lg">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                        {vehicle.transmission}
-                      </span>
-                      <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                        {vehicle.fuelType}
-                      </span>
-                      <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                        {vehicle.mileage.toLocaleString('pt-BR')} km
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
+      <section className="py-16 bg-gradient-to-b from-veloz-black to-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-veloz-yellow">Veículos em Destaque</h2>
+              <p className="text-gray-400 mt-2">Nossa seleção de veículos premium</p>
+            </div>
+            <Button variant="outline" asChild className="border-veloz-yellow text-veloz-yellow hover:bg-veloz-yellow/10">
+              <Link to="/vehicles" className="flex items-center">
+                Ver Todos <ChevronRight className="ml-1 h-4 w-4" />
               </Link>
-            ))}
+            </Button>
           </div>
-        ) : (
-          <div className="text-center py-20 border border-dashed border-gray-300 rounded-lg">
-            <p className="text-xl text-gray-500">Nenhum veículo disponível no momento.</p>
-            <p className="text-gray-400 mt-2">Volte em breve para ver nossos novos modelos.</p>
-          </div>
-        )}
+          
+          {loading ? (
+            <div className="text-center py-20">
+              <p className="text-xl text-gray-400">Carregando veículos...</p>
+            </div>
+          ) : featuredVehicles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredVehicles.map((vehicle) => (
+                <Link to={`/vehicles/${vehicle.id}`} key={vehicle.id} className="group">
+                  <Card className="h-full overflow-hidden hover:border-veloz-yellow transition-colors bg-gray-800 border-gray-700 text-white">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-900">
+                      {vehicle.photos && vehicle.photos.length > 0 ? (
+                        <img 
+                          src={vehicle.photos[0]} 
+                          alt={`${vehicle.brand} ${vehicle.model}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full bg-gray-800">
+                          <p className="text-gray-500">Sem imagem</p>
+                        </div>
+                      )}
+                      <div className="absolute top-2 right-2 bg-veloz-yellow px-2 py-1 rounded text-sm font-medium text-veloz-black">
+                        {vehicle.status === 'available' ? 'Disponível' : vehicle.status}
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-bold text-white">{vehicle.brand} {vehicle.model}</h3>
+                      <div className="flex justify-between mt-2">
+                        <p className="text-gray-400">{vehicle.year}</p>
+                        <p className="font-bold text-lg text-veloz-yellow">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                          {vehicle.transmission}
+                        </span>
+                        <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                          {vehicle.fuelType}
+                        </span>
+                        <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                          {vehicle.mileage.toLocaleString('pt-BR')} km
+                        </span>
+                      </div>
+                      <Button 
+                        className="w-full mt-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 flex items-center justify-center"
+                      >
+                        Saiba Mais <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 border border-dashed border-gray-700 rounded-lg">
+              <p className="text-xl text-gray-400">Nenhum veículo disponível no momento.</p>
+              <p className="text-gray-500 mt-2">Volte em breve para ver nossos novos modelos.</p>
+            </div>
+          )}
+        </div>
       </section>
       
-      {/* Why Choose Us Section */}
-      <section className="bg-white py-16">
+      {/* Vehicle Search Section */}
+      <section className="py-16 bg-gray-900">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Por que escolher nossa concessionária?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-8 text-veloz-yellow">Encontre o Veículo Ideal</h2>
+            <form onSubmit={handleSearchSubmit} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="brand" className="block text-sm font-medium text-gray-300 mb-1">Marca</label>
+                  <Input
+                    id="brand"
+                    name="brand"
+                    value={searchParams.brand}
+                    onChange={handleSearchChange}
+                    placeholder="Ex: Toyota, Honda, Ford..."
+                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="model" className="block text-sm font-medium text-gray-300 mb-1">Modelo</label>
+                  <Input
+                    id="model"
+                    name="model"
+                    value={searchParams.model}
+                    onChange={handleSearchChange}
+                    placeholder="Ex: Corolla, Civic, Focus..."
+                    className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                  />
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-2">Atendimento Rápido</h3>
-              <p className="text-gray-600">Nossa equipe está pronta para lhe atender com agilidade e eficiência.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Preço</label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="priceMin"
+                      name="priceMin"
+                      value={searchParams.priceMin}
+                      onChange={handleSearchChange}
+                      placeholder="Mínimo"
+                      type="number"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                    />
+                    <Input
+                      id="priceMax"
+                      name="priceMax"
+                      value={searchParams.priceMax}
+                      onChange={handleSearchChange}
+                      placeholder="Máximo"
+                      type="number"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Ano</label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="yearMin"
+                      name="yearMin"
+                      value={searchParams.yearMin}
+                      onChange={handleSearchChange}
+                      placeholder="De"
+                      type="number"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                    />
+                    <Input
+                      id="yearMax"
+                      name="yearMax"
+                      value={searchParams.yearMax}
+                      onChange={handleSearchChange}
+                      placeholder="Até"
+                      type="number"
+                      className="bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 py-3 font-medium text-lg"
+              >
+                <Search className="mr-2 h-5 w-5" /> Buscar Veículos
+              </Button>
+            </form>
+          </div>
+        </div>
+      </section>
+      
+      {/* About Section */}
+      <section className="py-16 bg-veloz-black">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-6 text-veloz-yellow">Sobre a VELOZ MOTORS</h2>
+              <p className="text-gray-300 mb-4">
+                A VELOZ MOTORS é uma concessionária especializada em veículos usados de alta qualidade. Há mais de 15 anos no mercado, nos dedicamos a oferecer carros com procedência garantida e em excelente estado.
+              </p>
+              <p className="text-gray-300 mb-6">
+                Nossa missão é proporcionar a melhor experiência na compra do seu veículo, com transparência, honestidade e atendimento personalizado. Trabalhamos com as melhores opções de financiamento do mercado.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-veloz-yellow mr-2 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-300">Veículos com garantia e procedência</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-veloz-yellow mr-2 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-300">Financiamento com as melhores taxas do mercado</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-veloz-yellow mr-2 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-300">Atendimento personalizado e sem pressão</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-6 w-6 text-veloz-yellow mr-2 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-300">Vistoria completa em todos os veículos</span>
+                </li>
+              </ul>
             </div>
-            <div className="text-center p-6">
-              <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+            <div className="relative h-96 rounded-lg overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1928&auto=format&fit=crop" 
+                alt="VELOZ MOTORS showroom" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-veloz-black to-transparent opacity-70"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <Button
+                  asChild
+                  className="bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90"
+                >
+                  <Link to="/about">Conheça Nossa História</Link>
+                </Button>
               </div>
-              <h3 className="text-xl font-bold mb-2">Garantia de Qualidade</h3>
-              <p className="text-gray-600">Todos os nossos veículos passam por rigorosas inspeções de qualidade.</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Melhores Condições</h3>
-              <p className="text-gray-600">Oferecemos as melhores condições de pagamento e financiamento do mercado.</p>
             </div>
           </div>
         </div>
@@ -157,54 +310,35 @@ const Home = () => {
       
       {/* Contact CTA Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="bg-slate-900 text-white rounded-xl p-8 md:p-12">
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl p-8 md:p-12 border border-veloz-yellow/20">
           <div className="md:flex md:items-center md:justify-between">
             <div className="mb-6 md:mb-0 md:w-2/3">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">Pronto para encontrar seu próximo veículo?</h2>
-              <p className="text-slate-300">Nossa equipe está à disposição para ajudar você a encontrar o veículo perfeito.</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-veloz-yellow">Pronto para encontrar seu próximo veículo?</h2>
+              <p className="text-gray-300">Nossa equipe está à disposição para ajudar você a encontrar o veículo perfeito.</p>
             </div>
-            <div>
-              <Button size="lg" className="w-full md:w-auto bg-white text-slate-900 hover:bg-slate-100">
-                Agendar Visita
+            <div className="flex gap-4">
+              <Button 
+                size="lg" 
+                className="w-full md:w-auto bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 font-medium"
+                asChild
+              >
+                <Link to="/contact">Agendar Visita</Link>
+              </Button>
+              <Button 
+                size="lg" 
+                className="w-full md:w-auto bg-transparent border-veloz-yellow text-veloz-yellow hover:bg-veloz-yellow/10"
+                variant="outline"
+                asChild
+              >
+                <Link to="/vehicles">Ver Estoque</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">VehicleManager</h3>
-              <p className="text-slate-400">Sua concessionária de confiança para veículos novos e usados.</p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Links Rápidos</h4>
-              <ul className="space-y-2">
-                <li><Link to="/" className="text-slate-400 hover:text-white">Home</Link></li>
-                <li><Link to="/vehicles" className="text-slate-400 hover:text-white">Veículos</Link></li>
-                <li><Link to="/about" className="text-slate-400 hover:text-white">Sobre Nós</Link></li>
-                <li><Link to="/contact" className="text-slate-400 hover:text-white">Contato</Link></li>
-                <li><Link to="/admin" className="text-slate-400 hover:text-white">Login Admin</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contato</h4>
-              <address className="text-slate-400 not-italic">
-                <p>Av. Principal, 1234</p>
-                <p>São Paulo, SP</p>
-                <p className="mt-2">contato@vehiclemanager.com</p>
-                <p>(11) 99999-9999</p>
-              </address>
-            </div>
-          </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-500">
-            <p>&copy; {new Date().getFullYear()} VehicleManager. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
+      <LiveChat />
     </div>
   );
 };

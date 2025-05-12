@@ -7,7 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import PublicVehicles from "./pages/PublicVehicles";
 import VehicleDetail from "./pages/VehicleDetail";
-import Dashboard from "./pages/Dashboard"; // We'll rename Index.tsx to Dashboard.tsx
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
+import Dashboard from "./pages/Dashboard"; 
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,8 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/vehicles" element={<PublicVehicles />} />
           <Route path="/vehicles/:id" element={<VehicleDetail />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<Contact />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<Dashboard />} />
