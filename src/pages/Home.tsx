@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Vehicle } from '@/types/vehicle';
 import PublicNavbar from '@/components/PublicNavbar';
 import Footer from '@/components/Footer';
@@ -21,6 +21,9 @@ const Home = () => {
     yearMin: '',
     yearMax: ''
   });
+  
+  // Refs for animated sections
+  const sectionsRef = useRef<(HTMLElement | null)[]>([]);
 
   // In a real application, this would fetch from an API
   useEffect(() => {
@@ -40,6 +43,32 @@ const Home = () => {
       setLoading(false);
     }, 1500); // Extended to 1.5 seconds to better see the skeleton animation
   }, []);
+  
+  // Intersection Observer for fade-in animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    
+    // Get all elements with animate-section class
+    const sections = document.querySelectorAll('.animate-section');
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
+    
+    return () => {
+      sections.forEach((section) => {
+        observer.unobserve(section);
+      });
+    };
+  }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParams({
@@ -58,22 +87,32 @@ const Home = () => {
     <div className="min-h-screen bg-veloz-black text-veloz-white">
       <PublicNavbar />
       
-      <HeroSection />
+      <div className="animate-fade-in">
+        <HeroSection />
+      </div>
       
-      <FeaturedVehicles 
-        vehicles={featuredVehicles}
-        loading={loading}
-      />
+      <div className="animate-section">
+        <FeaturedVehicles 
+          vehicles={featuredVehicles}
+          loading={loading}
+        />
+      </div>
       
-      <VehicleSearchSection 
-        searchParams={searchParams}
-        handleSearchChange={handleSearchChange}
-        handleSearchSubmit={handleSearchSubmit}
-      />
+      <div className="animate-section">
+        <VehicleSearchSection 
+          searchParams={searchParams}
+          handleSearchChange={handleSearchChange}
+          handleSearchSubmit={handleSearchSubmit}
+        />
+      </div>
       
-      <AboutSection />
+      <div className="animate-section">
+        <AboutSection />
+      </div>
       
-      <ContactCTA />
+      <div className="animate-section">
+        <ContactCTA />
+      </div>
 
       <Footer />
       <LiveChat />

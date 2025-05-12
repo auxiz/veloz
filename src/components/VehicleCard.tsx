@@ -22,13 +22,13 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
   };
   
   return (
-    <Card className="h-full flex flex-col overflow-hidden bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300">
+    <Card className="h-full flex flex-col overflow-hidden bg-gray-800 border-gray-700 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
       <div className="aspect-[16/9] relative bg-gray-900 overflow-hidden">
         {vehicle.photos && vehicle.photos.length > 0 ? (
           <img 
             src={vehicle.photos[0]} 
             alt={`${vehicle.brand} ${vehicle.model}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -52,9 +52,9 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
           {formatCurrency(vehicle.price)}
         </p>
         <div className="flex flex-wrap gap-1 mt-2">
-          <Badge variant="outline" className="bg-gray-700 text-gray-200">{vehicle.fuelType}</Badge>
-          <Badge variant="outline" className="bg-gray-700 text-gray-200">{vehicle.transmission}</Badge>
-          <Badge variant="outline" className="bg-gray-700 text-gray-200">{vehicle.color}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600">{vehicle.fuelType}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600">{vehicle.transmission}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600">{vehicle.color}</Badge>
         </div>
       </CardContent>
       
