@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import VehicleBadge from '@/components/VehicleBadge';
 
 interface FeaturedVehiclesProps {
   vehicles: Vehicle[];
@@ -71,8 +72,8 @@ const FeaturedVehicles = ({ vehicles, loading }: FeaturedVehiclesProps) => {
                         <p className="text-gray-500">Sem imagem</p>
                       </div>
                     )}
-                    <div className="absolute top-2 right-2 bg-veloz-yellow px-2 py-1 rounded text-sm font-medium text-veloz-black">
-                      {vehicle.status === 'available' ? 'Disponível' : vehicle.status}
+                    <div className="absolute top-2 right-2">
+                      <VehicleBadge status={vehicle.status} size="sm" />
                     </div>
                   </div>
                   <CardContent className="p-4">

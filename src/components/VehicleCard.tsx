@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Vehicle } from '@/types/vehicle';
 import { Eye, Pencil } from 'lucide-react';
+import VehicleBadge from './VehicleBadge';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -13,12 +14,6 @@ interface VehicleCardProps {
 }
 
 const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) => {
-  const statusColors = {
-    available: 'bg-green-500',
-    sold: 'bg-red-500',
-    reserved: 'bg-yellow-500'
-  };
-  
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -40,11 +35,9 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
             No image
           </div>
         )}
-        <Badge 
-          className={`absolute top-2 right-2 ${statusColors[vehicle.status]}`}
-        >
-          {vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}
-        </Badge>
+        <div className="absolute top-2 right-2">
+          <VehicleBadge status={vehicle.status} size="sm" />
+        </div>
       </div>
       
       <CardHeader className="pb-2">
