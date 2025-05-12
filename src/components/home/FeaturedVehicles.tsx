@@ -5,6 +5,7 @@ import { Vehicle } from '@/types/vehicle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface FeaturedVehiclesProps {
   vehicles: Vehicle[];
@@ -28,8 +29,30 @@ const FeaturedVehicles = ({ vehicles, loading }: FeaturedVehiclesProps) => {
         </div>
         
         {loading ? (
-          <div className="text-center py-20">
-            <p className="text-xl text-gray-400">Carregando veículos...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <Card key={index} className="h-full overflow-hidden bg-gray-800 border-gray-700">
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-900">
+                  <Skeleton className="w-full h-full bg-gray-700" />
+                  <div className="absolute top-2 right-2">
+                    <Skeleton className="w-20 h-6 rounded bg-gray-700" />
+                  </div>
+                </div>
+                <CardContent className="p-4">
+                  <Skeleton className="h-6 w-3/4 mb-4 bg-gray-700" />
+                  <div className="flex justify-between mt-2">
+                    <Skeleton className="h-5 w-16 bg-gray-700" />
+                    <Skeleton className="h-6 w-24 bg-gray-700" />
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Skeleton className="h-6 w-20 rounded bg-gray-700" />
+                    <Skeleton className="h-6 w-20 rounded bg-gray-700" />
+                    <Skeleton className="h-6 w-20 rounded bg-gray-700" />
+                  </div>
+                  <Skeleton className="h-10 w-full mt-4 rounded bg-gray-700" />
+                </CardContent>
+              </Card>
+            ))}
           </div>
         ) : vehicles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

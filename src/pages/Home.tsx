@@ -38,7 +38,7 @@ const Home = () => {
         }
       }
       setLoading(false);
-    }, 500);
+    }, 1500); // Extended to 1.5 seconds to better see the skeleton animation
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
