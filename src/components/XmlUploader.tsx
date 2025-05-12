@@ -73,9 +73,9 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto bg-gray-800 border-gray-700 text-gray-100">
+    <Card className="w-full max-w-3xl mx-auto bg-gray-800 border-gray-700 text-gray-100 font-montserrat">
       <CardHeader>
-        <CardTitle className="text-xl text-veloz-yellow">Import Vehicles from XML</CardTitle>
+        <CardTitle className="text-xl text-veloz-yellow font-bold">Import Vehicles from XML</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">
@@ -116,7 +116,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
           onClick={handleImport} 
           disabled={isLoading}
           variant="veloz"
-          className="w-full"
+          className="w-full font-bold"
         >
           {isLoading ? "Processing..." : "Import Vehicles from XML"}
         </Button>

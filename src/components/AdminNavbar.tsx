@@ -2,7 +2,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, FileText, Settings, LogOut } from 'lucide-react';
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const AdminNavbar = () => {
               className="h-10"
             />
           </Link>
-          <span className="ml-2 text-veloz-yellow text-xs">Admin Panel</span>
+          <span className="ml-2 text-veloz-yellow text-xs font-montserrat">Admin Panel</span>
         </div>
         
         <div className="flex space-x-2">
@@ -26,8 +25,8 @@ const AdminNavbar = () => {
             variant="veloz-outline" 
             size="sm"
             onClick={() => navigate('/admin')}
+            className="font-bold"
           >
-            <Home className="h-5 w-5 mr-2" />
             Dashboard
           </Button>
           
@@ -35,8 +34,8 @@ const AdminNavbar = () => {
             variant="veloz-outline"
             size="sm"
             onClick={() => navigate('/admin')}
+            className="font-bold"
           >
-            <FileText className="h-5 w-5 mr-2" />
             Inventory
           </Button>
           
@@ -44,8 +43,8 @@ const AdminNavbar = () => {
             variant="veloz-outline"
             size="sm"
             onClick={() => window.alert('Settings page not yet implemented')}
+            className="font-bold"
           >
-            <Settings className="h-5 w-5 mr-2" />
             Settings
           </Button>
           
@@ -53,8 +52,8 @@ const AdminNavbar = () => {
             variant="veloz"
             size="sm"
             onClick={() => navigate('/')}
+            className="font-bold"
           >
-            <LogOut className="h-5 w-5 mr-2" />
             Visit Site
           </Button>
         </div>

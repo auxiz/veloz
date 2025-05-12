@@ -27,27 +27,23 @@ const PublicNavbar = () => {
           
           {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors">
+            <Link to="/" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors font-montserrat font-bold">
               Home
             </Link>
-            <Link to="/vehicles" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors flex items-center">
-              <Car className="h-4 w-4 mr-1" />
+            <Link to="/vehicles" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors font-montserrat font-bold">
               Veículos
             </Link>
-            <Link to="/about" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors flex items-center">
-              <Info className="h-4 w-4 mr-1" />
+            <Link to="/about" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors font-montserrat font-bold">
               Sobre nós
             </Link>
-            <Link to="/contact" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors flex items-center">
-              <Mail className="h-4 w-4 mr-1" />
+            <Link to="/contact" className="px-3 py-2 text-veloz-white hover:text-veloz-yellow transition-colors font-montserrat font-bold">
               Contato
             </Link>
             <Button 
-              className="ml-4"
+              className="ml-4 font-bold"
               variant="veloz"
               onClick={() => window.alert('Simulação de Financiamento em desenvolvimento!')}
             >
-              <CreditCard className="h-5 w-5 mr-2" />
               Simule seu Financiamento
             </Button>
           </div>
@@ -74,35 +70,35 @@ const PublicNavbar = () => {
           <div className="md:hidden py-4 space-y-2 border-t border-veloz-yellow/20">
             <Link 
               to="/" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               to="/vehicles" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Car className="h-5 w-5 mr-2" /> Veículos
             </Link>
             <Link 
               to="/about" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Info className="h-5 w-5 mr-2" /> Sobre nós
             </Link>
             <Link 
               to="/contact" 
-              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center"
+              className="block px-3 py-3 text-veloz-white hover:bg-veloz-yellow/10 rounded-md flex items-center font-montserrat font-bold"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Mail className="h-5 w-5 mr-2" /> Contato
             </Link>
             <div className="px-3 py-3">
               <Button 
-                className="w-full"
+                className="w-full font-bold"
                 variant="veloz"
                 onClick={() => {
                   window.alert('Simulação de Financiamento em desenvolvimento!');
