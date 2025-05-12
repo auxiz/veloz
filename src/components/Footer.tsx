@@ -43,10 +43,10 @@ const Footer = () => {
               <div className="mt-4">
                 <h5 className="text-veloz-white mb-2">Siga-nos</h5>
                 <div className="flex space-x-4">
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-veloz-yellow hover:text-veloz-yellow/80">
+                  <a href="https://www.facebook.com/velozmotorsoficial/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-veloz-yellow hover:text-veloz-yellow/80">
                     <Facebook className="h-6 w-6" />
                   </a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-veloz-yellow hover:text-veloz-yellow/80">
+                  <a href="https://www.instagram.com/velozmotorsoficial" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-veloz-yellow hover:text-veloz-yellow/80">
                     <Instagram className="h-6 w-6" />
                   </a>
                   <a href="https://wa.me/5561995261897" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-veloz-yellow hover:text-veloz-yellow/80">

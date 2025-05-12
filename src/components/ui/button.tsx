@@ -19,9 +19,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-white",
         ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-white",
         link: "text-veloz-yellow underline-offset-4 hover:underline hover:opacity-80",
-        veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 hover:text-veloz-white font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
-        "veloz-outline": "border-2 border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-white font-bold",
-        "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-white font-bold shadow-md",
+        veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 hover:text-veloz-black font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
+        "veloz-outline": "border-2 border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black font-bold",
+        "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold shadow-md",
       },
       size: {
         default: "h-10 px-4 py-2",

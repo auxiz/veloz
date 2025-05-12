@@ -43,7 +43,7 @@ const AboutUs = () => {
             </div>
             <div className="relative h-full min-h-[400px] rounded-lg overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=1920&auto=format&fit=crop" 
+                src="https://images.unsplash.com/photo-1487887235947-a955ef187fcc?q=80&w=1287&auto=format&fit=crop" 
                 alt="VELOZ MOTORS ao longo dos anos" 
                 className="w-full h-full object-cover rounded-lg"
               />
