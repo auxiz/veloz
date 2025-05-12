@@ -12,7 +12,7 @@ const AboutSection = () => {
           <div>
             <h2 className="text-3xl font-bold mb-6 text-veloz-yellow">Sobre a VELOZ MOTORS</h2>
             <p className="text-gray-300 mb-4">
-              A VELOZ MOTORS é uma concessionária especializada em veículos usados de alta qualidade. Há mais de 15 anos no mercado, nos dedicamos a oferecer carros com procedência garantida e em excelente estado.
+              A VELOZ MOTORS é uma concessionária especializada em veículos usados de alta qualidade. Fundada em 2023, nos dedicamos a oferecer carros com procedência garantida e em excelente estado.
             </p>
             <p className="text-gray-300 mb-6">
               Nossa missão é proporcionar a melhor experiência na compra do seu veículo, com transparência, honestidade e atendimento personalizado. Trabalhamos com as melhores opções de financiamento do mercado.

@@ -29,13 +29,16 @@ const AboutUs = () => {
             <div>
               <h2 className="text-3xl font-bold mb-6 text-veloz-yellow">Nossa História</h2>
               <p className="text-gray-300 mb-4">
-                Fundada em 2008, a VELOZ MOTORS nasceu da paixão por automóveis e do compromisso com a excelência em atendimento. O que começou como uma pequena loja com apenas 5 veículos se transformou em uma das mais respeitadas concessionárias de veículos usados da região.
+                Fundada em 2023, a VELOZ MOTORS nasceu da paixão por automóveis e do compromisso com a excelência no atendimento. O que começou como uma loja especializada em veículos usados de alta qualidade tem se consolidado como uma das principais concessionárias da região.
               </p>
               <p className="text-gray-300 mb-4">
-                Nosso fundador, João Silva, sempre acreditou que a compra de um veículo usado deveria ser uma experiência tranquila e transparente. Essa filosofia guia cada aspecto do nosso negócio até hoje.
+                Nosso fundador, Pedro, sempre acreditou que a compra de um veículo usado deveria ser uma experiência transparente, confiável e descomplicada. Essa filosofia continua a guiar cada aspecto do nosso negócio até hoje.
               </p>
               <p className="text-gray-300 mb-4">
-                Com o passar dos anos, expandimos nossas instalações e ampliamos nossa equipe, mas mantivemos os mesmos valores que nos trouxeram até aqui: honestidade, qualidade e compromisso com a satisfação dos clientes.
+                Com o tempo, expandimos nosso portfólio de veículos e nossa estrutura, sempre mantendo os mesmos valores que nos trouxeram até aqui: honestidade, qualidade e compromisso com a satisfação dos nossos clientes.
+              </p>
+              <p className="text-gray-300 mb-4">
+                Hoje, a VELOZ MOTORS é sinônimo de confiança e respeito no mercado de carros usados, oferecendo aos nossos clientes a melhor experiência de compra e pós-venda.
               </p>
             </div>
             <div className="relative h-full min-h-[400px] rounded-lg overflow-hidden">
