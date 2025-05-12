@@ -9,9 +9,16 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">VELOZ<span className="text-veloz-yellow">MOTORS</span></h3>
+            <div className="mb-4">
+              <img 
+                src="/lovable-uploads/97c5420b-2d96-438a-bfdb-cabb98693f10.png" 
+                alt="VELOZ MOTORS" 
+                className="h-16"
+              />
+            </div>
             <p className="text-gray-400">Sua concessionária de confiança para veículos usados de alta qualidade. Estamos comprometidos em oferecer o melhor atendimento e as melhores opções para você.</p>
           </div>
+          
           <div>
             <h4 className="text-lg font-semibold mb-4 text-veloz-yellow">Links Rápidos</h4>
             <ul className="space-y-2">
