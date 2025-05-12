@@ -19,7 +19,7 @@ const PublicNavbar = () => {
           {/* Logo and brand */}
           <Link to="/" className="flex items-center">
             <img 
-              src="/veloz-logo.png" 
+              src="/lovable-uploads/97c5420b-2d96-438a-bfdb-cabb98693f10.png" 
               alt="VELOZ MOTORS" 
               className="h-12 sm:h-14"
             />

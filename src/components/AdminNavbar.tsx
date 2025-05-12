@@ -12,7 +12,7 @@ const AdminNavbar = () => {
         <div className="flex items-center mb-4 md:mb-0">
           <Link to="/admin">
             <img 
-              src="/veloz-logo.png" 
+              src="/lovable-uploads/97c5420b-2d96-438a-bfdb-cabb98693f10.png" 
               alt="VELOZ MOTORS" 
               className="h-10"
             />
