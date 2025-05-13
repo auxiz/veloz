@@ -8,18 +8,9 @@ import { Button } from '@/components/ui/button';
 import PublicNavbar from '@/components/PublicNavbar';
 import Footer from '@/components/Footer';
 import { Search, ChevronRight, Filter } from 'lucide-react';
+import { loadVehiclesFromLocalStorage, startScheduledImport } from '@/utils/scheduledXmlImport';
 
-// This would come from an API in a real application
-const loadVehicles = (): Vehicle[] => {
-  try {
-    const storedVehicles = JSON.parse(window.localStorage.getItem('vehicles') || '[]');
-    return storedVehicles.filter((v: Vehicle) => v.status === 'available');
-  } catch (err) {
-    console.error('Error loading vehicles:', err);
-    return [];
-  }
-};
-
+// This is now using our scheduled import system
 const PublicVehicles = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
@@ -29,19 +20,44 @@ const PublicVehicles = () => {
   const [brandFilter, setBrandFilter] = useState('all');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [yearRange, setYearRange] = useState({ min: '', max: '' });
+  const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
   
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      const loadedVehicles = loadVehicles();
-      setVehicles(loadedVehicles);
-      setFilteredVehicles(loadedVehicles);
+    const loadVehicles = () => {
+      setLoading(true);
+      
+      // Load vehicles from localStorage
+      const storedVehicles = loadVehiclesFromLocalStorage();
+      
+      // Filter for only available vehicles
+      const availableVehicles = storedVehicles.filter(v => v.status === 'available');
+      
+      setVehicles(availableVehicles);
+      setFilteredVehicles(availableVehicles);
       setLoading(false);
-    }, 500);
+      
+      // Start scheduled import if not already running
+      startScheduledImport(
+        xmlUrl,
+        (result) => {
+          if (result.success && result.vehicles) {
+            // Update the available vehicles when new data is imported
+            const newAvailableVehicles = result.vehicles.filter(v => v.status === 'available');
+            setVehicles(newAvailableVehicles);
+            
+            // Re-apply filters with the new data
+            applyFilters(newAvailableVehicles);
+          }
+        }
+      );
+    };
+    
+    loadVehicles();
   }, []);
   
-  useEffect(() => {
-    let results = [...vehicles];
+  // Separate function to apply filters for reuse
+  const applyFilters = (vehiclesToFilter: Vehicle[]) => {
+    let results = [...vehiclesToFilter];
     
     // Apply search filter
     if (searchTerm) {
@@ -95,6 +111,11 @@ const PublicVehicles = () => {
     }
     
     setFilteredVehicles(results);
+  };
+  
+  // Apply filters when any filter criteria changes
+  useEffect(() => {
+    applyFilters(vehicles);
   }, [searchTerm, sortBy, brandFilter, priceRange, yearRange, vehicles]);
   
   // Get unique brands for the filter

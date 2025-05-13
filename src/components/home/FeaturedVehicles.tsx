@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Vehicle } from '@/types/vehicle';
 import { Button } from '@/components/ui/button';
@@ -7,13 +7,55 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import VehicleBadge from '@/components/VehicleBadge';
+import { loadVehiclesFromLocalStorage, startScheduledImport } from '@/utils/scheduledXmlImport';
 
 interface FeaturedVehiclesProps {
-  vehicles: Vehicle[];
-  loading: boolean;
+  vehicles?: Vehicle[];
+  loading?: boolean;
 }
 
-const FeaturedVehicles = ({ vehicles, loading }: FeaturedVehiclesProps) => {
+const FeaturedVehicles = ({ vehicles: propVehicles, loading: propLoading }: FeaturedVehiclesProps) => {
+  const [vehicles, setVehicles] = useState<Vehicle[]>(propVehicles || []);
+  const [loading, setLoading] = useState<boolean>(propLoading || true);
+  const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
+
+  useEffect(() => {
+    if (propVehicles) {
+      setVehicles(propVehicles);
+      setLoading(propLoading || false);
+    } else {
+      // If no vehicles passed as props, load from localStorage and start auto-import
+      setLoading(true);
+      
+      const storedVehicles = loadVehiclesFromLocalStorage();
+      
+      // Filter for only available vehicles and take the top 6 for featured display
+      const featuredVehicles = storedVehicles
+        .filter(v => v.status === 'available')
+        .sort((a, b) => b.price - a.price) // Show most expensive first
+        .slice(0, 6);
+      
+      setVehicles(featuredVehicles);
+      setLoading(false);
+      
+      // Start scheduled import if it's not running yet
+      startScheduledImport(
+        xmlUrl,
+        (result) => {
+          if (result.success && result.vehicles) {
+            // Update featured vehicles when new data is imported
+            const newFeaturedVehicles = result.vehicles
+              .filter(v => v.status === 'available')
+              .sort((a, b) => b.price - a.price)
+              .slice(0, 6);
+            
+            setVehicles(newFeaturedVehicles);
+          }
+        }
+      );
+    }
+  }, [propVehicles, propLoading]);
+
   return (
     <section className="py-16 bg-gradient-to-b from-veloz-black to-gray-900">
       <div className="container mx-auto px-4">

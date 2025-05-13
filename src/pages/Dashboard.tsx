@@ -7,55 +7,47 @@ import VehicleList from '@/components/VehicleList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { parseVehiclesXml } from '@/utils/xmlParser';
+import { startScheduledImport, loadVehiclesFromLocalStorage, isImportNeeded } from '@/utils/scheduledXmlImport';
 
 const Dashboard = () => {
   const { toast } = useToast();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [activeTab, setActiveTab] = useState('inventory');
   const [loading, setLoading] = useState(false);
-  
-  // Fetch XML data on component mount
+  const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
+
+  // Initialize vehicles and start scheduled imports
   useEffect(() => {
-    const fetchInitialData = async () => {
-      const storedVehicles = localStorage.getItem('vehicles');
+    const loadInitialData = async () => {
+      setLoading(true);
       
-      if (storedVehicles) {
-        try {
-          setVehicles(JSON.parse(storedVehicles));
-        } catch (error) {
-          console.error("Error parsing stored vehicles:", error);
-        }
-      } else {
-        // If no vehicles in localStorage, fetch from XML
-        setLoading(true);
-        try {
-          const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
-          const response = await fetch(xmlUrl);
-          
-          if (response.ok) {
-            const xmlContent = await response.text();
-            const result = await parseVehiclesXml(xmlContent);
-            
-            if (result.success && result.vehicles) {
-              setVehicles(result.vehicles);
-              localStorage.setItem('vehicles', JSON.stringify(result.vehicles));
-              
-              toast({
-                title: "Auto-Import Successful",
-                description: `${result.vehicles.length} vehicles imported from XML.`,
-              });
-            }
+      // Load vehicles from localStorage first
+      const storedVehicles = loadVehiclesFromLocalStorage();
+      setVehicles(storedVehicles);
+      
+      // Start the scheduled import process
+      startScheduledImport(
+        xmlUrl,
+        (result) => {
+          if (result.success && result.vehicles) {
+            setVehicles(result.vehicles);
           }
-        } catch (error) {
-          console.error("Error fetching initial XML data:", error);
-        } finally {
-          setLoading(false);
+        },
+        (error) => {
+          console.error("Scheduled import error:", error);
         }
-      }
+      );
+      
+      setLoading(false);
     };
 
-    fetchInitialData();
+    loadInitialData();
+    
+    // Clean up interval when component unmounts
+    return () => {
+      // We don't need to stop scheduled imports since we want them to continue
+      // even when navigating away from this page
+    };
   }, [toast]);
   
   const handleImportComplete = (result: XmlImportResult) => {
@@ -115,18 +107,6 @@ const Dashboard = () => {
       });
     }
   };
-
-  // Load vehicles from localStorage on component mount
-  React.useEffect(() => {
-    const storedVehicles = localStorage.getItem('vehicles');
-    if (storedVehicles) {
-      try {
-        setVehicles(JSON.parse(storedVehicles));
-      } catch (error) {
-        console.error("Error parsing stored vehicles:", error);
-      }
-    }
-  }, []);
   
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
@@ -159,15 +139,15 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <ol className="list-decimal list-inside space-y-2 text-gray-300">
-                    <li>Click the import button to fetch vehicle data.</li>
-                    <li>The system will automatically download and process the XML.</li>
+                    <li>The system automatically imports vehicle data every hour.</li>
+                    <li>You can also manually import by clicking the import button.</li>
                     <li>New vehicles will be added to your inventory.</li>
                     <li>Existing vehicles will remain unchanged.</li>
                   </ol>
                 </CardContent>
                 <CardFooter>
                   <p className="text-xs text-gray-400">
-                    XML feed URL: http://app.revendamais.com.br/application/...
+                    XML feed URL: {xmlUrl.substring(0, 50)}...
                   </p>
                 </CardFooter>
               </Card>
