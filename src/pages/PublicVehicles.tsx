@@ -17,6 +17,7 @@ const PublicVehicles = () => {
   // Get all the filtering functionality from our custom hook
   const {
     filteredVehicles,
+    paginatedVehicles,
     searchTerm,
     setSearchTerm,
     sortBy,
@@ -28,7 +29,13 @@ const PublicVehicles = () => {
     yearRange,
     setYearRange,
     uniqueBrands,
-    handleReset
+    handleReset,
+    // Pagination
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages
   } = useVehicleFiltering(vehicles);
   
   useEffect(() => {
@@ -84,12 +91,18 @@ const PublicVehicles = () => {
             onReset={handleReset}
           />
           
-          {/* Vehicle grid */}
+          {/* Vehicle grid with pagination */}
           <div className="lg:col-span-3">
             <VehicleGrid 
-              vehicles={filteredVehicles} 
+              vehicles={paginatedVehicles} 
               isLoading={loading}
-              onResetFilters={handleReset} 
+              onResetFilters={handleReset}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              totalPages={totalPages}
+              totalVehicles={filteredVehicles.length}
             />
           </div>
         </div>
