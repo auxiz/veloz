@@ -1,110 +1,29 @@
 
-import React, { useState, useEffect } from 'react';
-import { XmlImportResult, Vehicle } from '@/types/vehicle';
+import React, { useState } from 'react';
 import AdminNavbar from '@/components/AdminNavbar';
-import XmlUploader from '@/components/XmlUploader';
-import VehicleList from '@/components/VehicleList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { startScheduledImport, loadVehiclesFromLocalStorage, isImportNeeded } from '@/utils/scheduledXmlImport';
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import ImportSection from '@/components/dashboard/ImportSection';
+import InventorySection from '@/components/dashboard/InventorySection';
+import { useVehicleManagement } from '@/hooks/useVehicleManagement';
 
 const Dashboard = () => {
-  const { toast } = useToast();
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [activeTab, setActiveTab] = useState('inventory');
-  const [loading, setLoading] = useState(false);
   const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
 
-  // Initialize vehicles and start scheduled imports
-  useEffect(() => {
-    const loadInitialData = async () => {
-      setLoading(true);
-      
-      // Load vehicles from localStorage first
-      const storedVehicles = loadVehiclesFromLocalStorage();
-      setVehicles(storedVehicles);
-      
-      // Start the scheduled import process
-      startScheduledImport(
-        xmlUrl,
-        (result) => {
-          if (result.success && result.vehicles) {
-            setVehicles(result.vehicles);
-          }
-        },
-        (error) => {
-          console.error("Scheduled import error:", error);
-        }
-      );
-      
-      setLoading(false);
-    };
-
-    loadInitialData();
-    
-    // Clean up interval when component unmounts
-    return () => {
-      // We don't need to stop scheduled imports since we want them to continue
-      // even when navigating away from this page
-    };
-  }, [toast]);
+  const { 
+    vehicles, 
+    loading, 
+    handleImportComplete, 
+    handleVehicleUpdate, 
+    handleVehicleDelete 
+  } = useVehicleManagement(xmlUrl);
   
-  const handleImportComplete = (result: XmlImportResult) => {
-    if (result.success && result.vehicles && result.vehicles.length > 0) {
-      setVehicles(prevVehicles => {
-        // Merge new vehicles with existing ones, avoiding duplicates
-        const existingIds = new Set(prevVehicles.map(v => v.id));
-        const newVehicles = result.vehicles!.filter(v => !existingIds.has(v.id));
-        
-        const allVehicles = [...prevVehicles, ...newVehicles];
-        
-        // Store in localStorage for our demo
-        localStorage.setItem('vehicles', JSON.stringify(allVehicles));
-        
-        return allVehicles;
-      });
-      
+  const onImportComplete = (result: any) => {
+    const success = handleImportComplete(result);
+    if (success) {
       // Switch to inventory tab after successful upload
       setActiveTab('inventory');
-    }
-  };
-  
-  const handleVehicleUpdate = (updatedVehicle: Vehicle) => {
-    setVehicles(prevVehicles => {
-      const updatedVehicles = prevVehicles.map(vehicle => 
-        vehicle.id === updatedVehicle.id ? updatedVehicle : vehicle
-      );
-      
-      // Update localStorage
-      localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
-      
-      return updatedVehicles;
-    });
-    
-    toast({
-      title: "Vehicle Updated",
-      description: `${updatedVehicle.brand} ${updatedVehicle.model} has been updated.`
-    });
-  };
-  
-  const handleVehicleDelete = (vehicleId: string) => {
-    const vehicleToDelete = vehicles.find(v => v.id === vehicleId);
-    
-    setVehicles(prevVehicles => {
-      const filteredVehicles = prevVehicles.filter(vehicle => vehicle.id !== vehicleId);
-      
-      // Update localStorage
-      localStorage.setItem('vehicles', JSON.stringify(filteredVehicles));
-      
-      return filteredVehicles;
-    });
-    
-    if (vehicleToDelete) {
-      toast({
-        title: "Vehicle Deleted",
-        description: `${vehicleToDelete.brand} ${vehicleToDelete.model} has been removed.`
-      });
     }
   };
   
@@ -113,10 +32,10 @@ const Dashboard = () => {
       <AdminNavbar />
       
       <main className="container mx-auto px-4 py-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-veloz-yellow">Vehicle Management Dashboard</h1>
-          <p className="text-gray-400">Upload, view, and manage your vehicle inventory</p>
-        </div>
+        <DashboardHeader 
+          title="Vehicle Management Dashboard" 
+          description="Upload, view, and manage your vehicle inventory" 
+        />
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-6 bg-gray-800">
@@ -129,59 +48,20 @@ const Dashboard = () => {
           </TabsList>
           
           <TabsContent value="upload" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="col-span-1 bg-gray-800 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-veloz-yellow">XML Import Instructions</CardTitle>
-                  <CardDescription className="text-gray-400">
-                    Connected to RevendaMais XML Feed
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ol className="list-decimal list-inside space-y-2 text-gray-300">
-                    <li>The system automatically imports vehicle data every hour.</li>
-                    <li>You can also manually import by clicking the import button.</li>
-                    <li>New vehicles will be added to your inventory.</li>
-                    <li>Existing vehicles will remain unchanged.</li>
-                  </ol>
-                </CardContent>
-                <CardFooter>
-                  <p className="text-xs text-gray-400">
-                    XML feed URL: {xmlUrl.substring(0, 50)}...
-                  </p>
-                </CardFooter>
-              </Card>
-              
-              <div className="col-span-1 md:col-span-2">
-                <XmlUploader onImportComplete={handleImportComplete} />
-              </div>
-            </div>
+            <ImportSection 
+              xmlUrl={xmlUrl} 
+              onImportComplete={onImportComplete} 
+            />
           </TabsContent>
           
           <TabsContent value="inventory">
             <div className="space-y-6">
-              {loading ? (
-                <Card className="bg-gray-800 border-gray-700">
-                  <CardContent className="flex flex-col items-center justify-center py-12">
-                    <p className="text-xl text-gray-400 mb-4">Loading inventory data...</p>
-                  </CardContent>
-                </Card>
-              ) : vehicles.length === 0 ? (
-                <Card className="bg-gray-800 border-gray-700">
-                  <CardContent className="flex flex-col items-center justify-center py-12">
-                    <p className="text-xl text-gray-400 mb-4">Your inventory is empty.</p>
-                    <p className="text-gray-500">
-                      Import vehicles using the XML import feature.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <VehicleList 
-                  vehicles={vehicles}
-                  onVehicleUpdate={handleVehicleUpdate}
-                  onVehicleDelete={handleVehicleDelete}
-                />
-              )}
+              <InventorySection 
+                vehicles={vehicles}
+                loading={loading}
+                onVehicleUpdate={handleVehicleUpdate}
+                onVehicleDelete={handleVehicleDelete}
+              />
             </div>
           </TabsContent>
         </Tabs>
