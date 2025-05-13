@@ -38,7 +38,7 @@ const AboutSection = () => {
           </div>
           <div className="relative h-96 rounded-lg overflow-hidden">
             <img 
-              src="https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1928&auto=format&fit=crop" 
+              src="https://revendedor-teste.ecosysauto.site/images/home/car-header.png" 
               alt="VELOZ MOTORS showroom" 
               className="w-full h-full object-cover"
             />
