@@ -12,16 +12,16 @@ import { format } from 'date-fns';
 
 interface XmlUploaderProps {
   onImportComplete: (result: XmlImportResult) => void;
+  xmlUrl: string;
 }
 
-const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
+const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
   const [lastImport, setLastImport] = useState<Date | null>(null);
   const [nextImport, setNextImport] = useState<Date | null>(null);
-  const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
 
   // Update the last and next import times
   useEffect(() => {
@@ -43,6 +43,15 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
   }, []);
 
   const handleImport = async () => {
+    if (!xmlUrl) {
+      toast({
+        title: "Erro",
+        description: "Por favor, configure uma URL de XML válida primeiro",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     try {
       setIsLoading(true);
       setErrors([]);
@@ -52,7 +61,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
       const response = await fetch(xmlUrl);
       
       if (!response.ok) {
-        throw new Error(`Failed to fetch XML: ${response.status} ${response.statusText}`);
+        throw new Error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
       }
 
       setProgress(50);
@@ -68,17 +77,17 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
         
         if (result.success) {
           toast({
-            title: "Import Successful",
-            description: `${result.vehicles?.length} vehicles imported successfully.`,
+            title: "Importação Bem-Sucedida",
+            description: `${result.vehicles?.length} veículos importados com sucesso.`,
           });
           
           // Update last import time display
           setLastImport(new Date());
           setNextImport(new Date(Date.now() + 3600000));
         } else {
-          setErrors(result.errors || ['An unknown error occurred']);
+          setErrors(result.errors || ['Ocorreu um erro desconhecido']);
           toast({
-            title: "Import Failed",
+            title: "Falha na Importação",
             description: result.message,
             variant: "destructive"
           });
@@ -92,8 +101,8 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
       setProgress(0);
       setErrors([error instanceof Error ? error.message : String(error)]);
       toast({
-        title: "Import Failed",
-        description: "An error occurred while processing the XML data.",
+        title: "Falha na Importação",
+        description: "Ocorreu um erro ao processar os dados XML.",
         variant: "destructive"
       });
     }
@@ -102,7 +111,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
   return (
     <Card className="w-full max-w-3xl mx-auto bg-gray-800 border-gray-700 text-gray-100 font-montserrat">
       <CardHeader>
-        <CardTitle className="text-xl text-veloz-yellow font-bold">Import Vehicles from XML</CardTitle>
+        <CardTitle className="text-xl text-veloz-yellow font-bold">Importar Veículos de XML</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">
@@ -110,8 +119,10 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
             <div className="flex flex-col items-center space-y-2">
               <FileUp className="h-12 w-12 text-veloz-yellow" />
               <div className="text-gray-400">
-                <p className="mb-2">XML URL configured:</p>
-                <p className="text-veloz-yellow text-sm break-all">{xmlUrl}</p>
+                <p className="mb-2">{xmlUrl ? 'URL do XML configurada:' : 'URL do XML não configurada'}</p>
+                <p className="text-veloz-yellow text-sm break-all">
+                  {xmlUrl || 'Configure a URL do arquivo XML nas configurações'}
+                </p>
               </div>
             </div>
           </div>
@@ -120,25 +131,25 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
             <div className="flex items-start">
               <Clock className="h-5 w-5 mr-2 text-veloz-yellow flex-shrink-0 mt-1" />
               <div>
-                <h3 className="text-sm font-medium text-gray-300">Auto-Import Schedule</h3>
+                <h3 className="text-sm font-medium text-gray-300">Cronograma de Importação Automática</h3>
                 <p className="text-xs text-gray-400 mt-1">
-                  The system automatically imports new vehicle data every hour.
+                  O sistema importa automaticamente novos dados de veículos a cada hora.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <div className="bg-gray-800 p-2 rounded text-center">
-                    <p className="text-xs text-gray-400">Last Import</p>
+                    <p className="text-xs text-gray-400">Última Importação</p>
                     <p className="text-sm text-veloz-yellow">
                       {lastImport 
                         ? format(lastImport, 'dd/MM/yyyy HH:mm') 
-                        : 'Never'}
+                        : 'Nunca'}
                     </p>
                   </div>
                   <div className="bg-gray-800 p-2 rounded text-center">
-                    <p className="text-xs text-gray-400">Next Import</p>
+                    <p className="text-xs text-gray-400">Próxima Importação</p>
                     <p className="text-sm text-veloz-yellow">
                       {nextImport 
                         ? format(nextImport, 'dd/MM/yyyy HH:mm')
-                        : 'Soon'}
+                        : 'Em breve'}
                     </p>
                   </div>
                 </div>
@@ -148,7 +159,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
 
           {errors.length > 0 && (
             <div className="bg-red-900/20 border border-red-700 text-red-200 p-3 rounded">
-              <h4 className="font-semibold mb-1">Errors:</h4>
+              <h4 className="font-semibold mb-1">Erros:</h4>
               <ul className="list-disc list-inside">
                 {errors.map((error, index) => (
                   <li key={index}>{error}</li>
@@ -160,7 +171,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
           {isLoading && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Fetching and processing XML data...</span>
+                <span>Buscando e processando dados XML...</span>
                 <span>{progress}%</span>
               </div>
               <Progress value={progress} className="bg-gray-700" />
@@ -171,11 +182,11 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete }) => {
       <CardFooter>
         <Button 
           onClick={handleImport} 
-          disabled={isLoading}
+          disabled={isLoading || !xmlUrl}
           variant="veloz"
           className="w-full font-bold"
         >
-          {isLoading ? "Processing..." : "Import Vehicles Now"}
+          {isLoading ? "Processando..." : "Importar Veículos Agora"}
         </Button>
       </CardFooter>
     </Card>

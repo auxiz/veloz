@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminNavbar from '@/components/AdminNavbar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -10,7 +10,17 @@ import Footer from '@/components/Footer';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('inventory');
-  const xmlUrl = "http://app.revendamais.com.br/application/index.php/apiGeneratorXml/generator/sitedaloja/e64ccd1ada81eb551e2537627b54e6de11998.xml";
+  const [xmlUrl, setXmlUrl] = useState(() => {
+    return localStorage.getItem('xmlUrlConfig') || "";
+  });
+
+  useEffect(() => {
+    // Initialize from localStorage if available
+    const savedUrl = localStorage.getItem('xmlUrlConfig');
+    if (savedUrl) {
+      setXmlUrl(savedUrl);
+    }
+  }, []);
 
   const { 
     vehicles, 
@@ -26,6 +36,11 @@ const Dashboard = () => {
       // Switch to inventory tab after successful upload
       setActiveTab('inventory');
     }
+  };
+
+  const handleXmlUrlChange = (url: string) => {
+    setXmlUrl(url);
+    localStorage.setItem('xmlUrlConfig', url);
   };
   
   return (
@@ -57,7 +72,8 @@ const Dashboard = () => {
           <TabsContent value="upload" className="space-y-6 animate-entrance">
             <ImportSection 
               xmlUrl={xmlUrl} 
-              onImportComplete={onImportComplete} 
+              onImportComplete={onImportComplete}
+              onXmlUrlChange={handleXmlUrlChange}
             />
           </TabsContent>
           

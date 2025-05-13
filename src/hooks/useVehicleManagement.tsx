@@ -18,18 +18,20 @@ export function useVehicleManagement(xmlUrl: string) {
       const storedVehicles = loadVehiclesFromLocalStorage();
       setVehicles(storedVehicles);
       
-      // Start the scheduled import process
-      startScheduledImport(
-        xmlUrl,
-        (result) => {
-          if (result.success && result.vehicles) {
-            setVehicles(result.vehicles);
+      if (xmlUrl) {
+        // Start the scheduled import process
+        startScheduledImport(
+          xmlUrl,
+          (result) => {
+            if (result.success && result.vehicles) {
+              setVehicles(result.vehicles);
+            }
+          },
+          (error) => {
+            console.error("Erro na importação programada:", error);
           }
-        },
-        (error) => {
-          console.error("Scheduled import error:", error);
-        }
-      );
+        );
+      }
       
       setLoading(false);
     };
@@ -71,8 +73,8 @@ export function useVehicleManagement(xmlUrl: string) {
     });
     
     toast({
-      title: "Vehicle Updated",
-      description: `${updatedVehicle.brand} ${updatedVehicle.model} has been updated.`
+      title: "Veículo Atualizado",
+      description: `${updatedVehicle.brand} ${updatedVehicle.model} foi atualizado.`
     });
   };
   
@@ -90,8 +92,8 @@ export function useVehicleManagement(xmlUrl: string) {
     
     if (vehicleToDelete) {
       toast({
-        title: "Vehicle Deleted",
-        description: `${vehicleToDelete.brand} ${vehicleToDelete.model} has been removed.`
+        title: "Veículo Excluído",
+        description: `${vehicleToDelete.brand} ${vehicleToDelete.model} foi removido.`
       });
     }
   };

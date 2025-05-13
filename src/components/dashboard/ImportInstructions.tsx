@@ -16,20 +16,20 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
           <span>Instruções de Importação XML</span>
         </CardTitle>
         <CardDescription className="text-gray-400">
-          Conectado ao Feed XML RevendaMais
+          Importe veículos de arquivos XML
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
         <ol className="list-decimal list-inside space-y-3 text-gray-300">
+          <li className="pb-2 border-b border-gray-700">Configure a URL do seu arquivo XML na seção acima.</li>
           <li className="pb-2 border-b border-gray-700">O sistema importa automaticamente os dados dos veículos a cada hora.</li>
-          <li className="pb-2 border-b border-gray-700">Você também pode importar manualmente clicando no botão importar.</li>
-          <li className="pb-2 border-b border-gray-700">Novos veículos serão adicionados ao seu inventário.</li>
-          <li>Veículos existentes permanecerão inalterados.</li>
+          <li className="pb-2 border-b border-gray-700">Você também pode importar manualmente clicando no botão "Importar Veículos Agora".</li>
+          <li>Novos veículos serão adicionados ao seu inventário sem duplicações.</li>
         </ol>
       </CardContent>
       <CardFooter className="flex items-center gap-2 bg-gray-900 border-t border-gray-700 text-xs text-gray-400">
         <ArrowDownToLine className="h-4 w-4 text-veloz-yellow" />
-        <span>XML feed URL: {xmlUrl.substring(0, 40)}...</span>
+        <span>URL do feed XML: {xmlUrl ? (xmlUrl.length > 40 ? `${xmlUrl.substring(0, 40)}...` : xmlUrl) : "Não configurado"}</span>
       </CardFooter>
     </Card>
   );

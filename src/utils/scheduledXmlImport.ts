@@ -1,7 +1,6 @@
 
 import { parseVehiclesXml } from './xmlParser';
 import { XmlImportResult, Vehicle } from '@/types/vehicle';
-import { toast } from '@/hooks/use-toast';
 
 // Store the last import time
 let lastImportTime = 0;
@@ -14,7 +13,7 @@ export const saveVehiclesToLocalStorage = (vehicles: Vehicle[]): void => {
     localStorage.setItem('vehicles', JSON.stringify(vehicles));
     localStorage.setItem('lastXmlImportTime', Date.now().toString());
   } catch (error) {
-    console.error('Failed to save vehicles to localStorage:', error);
+    console.error('Falha ao salvar veículos no localStorage:', error);
   }
 };
 
@@ -24,7 +23,7 @@ export const loadVehiclesFromLocalStorage = (): Vehicle[] => {
     const storedVehicles = localStorage.getItem('vehicles');
     return storedVehicles ? JSON.parse(storedVehicles) : [];
   } catch (error) {
-    console.error('Failed to load vehicles from localStorage:', error);
+    console.error('Falha ao carregar veículos do localStorage:', error);
     return [];
   }
 };
@@ -45,19 +44,29 @@ export const importXmlData = async (
   onSuccess?: (result: XmlImportResult) => void,
   onError?: (error: Error) => void
 ): Promise<XmlImportResult | null> => {
+  if (!xmlUrl) {
+    const error = new Error("URL do XML não configurada");
+    if (onError) onError(error);
+    return {
+      success: false,
+      message: "URL do XML não configurada",
+      errors: ["Por favor, configure a URL do XML nas configurações"]
+    };
+  }
+
   if (isImportInProgress) {
-    console.log('Import already in progress, skipping');
+    console.log('Importação já em andamento, ignorando');
     return null;
   }
   
   isImportInProgress = true;
   
   try {
-    console.log('Fetching XML from:', xmlUrl);
+    console.log('Buscando XML de:', xmlUrl);
     const response = await fetch(xmlUrl);
     
     if (!response.ok) {
-      throw new Error(`Failed to fetch XML: ${response.status} ${response.statusText}`);
+      throw new Error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
     }
     
     const xmlContent = await response.text();
@@ -71,39 +80,48 @@ export const importXmlData = async (
         onSuccess(result);
       }
       
-      toast({
-        title: "Auto Import Successful",
-        description: `${result.vehicles.length} vehicles imported from XML.`
-      });
+      // Use toast service if available
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast({
+          title: "Importação Automática Bem-sucedida",
+          description: `${result.vehicles.length} veículos importados do XML.`
+        });
+      }
     } else {
       if (onError) {
         onError(new Error(result.message));
       }
       
-      toast({
-        title: "Auto Import Failed",
-        description: result.message,
-        variant: "destructive"
-      });
+      // Use toast service if available
+      if (typeof window !== 'undefined' && window.toast) {
+        window.toast({
+          title: "Falha na Importação Automática",
+          description: result.message,
+          variant: "destructive"
+        });
+      }
     }
     
     return result;
   } catch (error) {
-    console.error('Error importing XML data:', error);
+    console.error('Erro ao importar dados XML:', error);
     
     if (onError && error instanceof Error) {
       onError(error);
     }
     
-    toast({
-      title: "Auto Import Failed",
-      description: error instanceof Error ? error.message : "Unknown error occurred",
-      variant: "destructive"
-    });
+    // Use toast service if available
+    if (typeof window !== 'undefined' && window.toast) {
+      window.toast({
+        title: "Falha na Importação Automática",
+        description: error instanceof Error ? error.message : "Ocorreu um erro desconhecido",
+        variant: "destructive"
+      });
+    }
     
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Unknown error occurred",
+      message: error instanceof Error ? error.message : "Ocorreu um erro desconhecido",
       errors: [error instanceof Error ? error.message : String(error)]
     };
   } finally {
@@ -118,20 +136,20 @@ export const startScheduledImport = (
   onError?: (error: Error) => void
 ): void => {
   if (importInterval !== null) {
-    console.log('Scheduled import already running');
+    console.log('Importação programada já em execução');
     return;
   }
   
-  console.log('Starting scheduled XML import');
+  console.log('Iniciando importação programada de XML');
   
   // Perform immediate check and import if needed
-  if (isImportNeeded()) {
+  if (xmlUrl && isImportNeeded()) {
     importXmlData(xmlUrl, onSuccess, onError);
   }
   
   // Set up hourly check
   importInterval = window.setInterval(() => {
-    if (isImportNeeded()) {
+    if (xmlUrl && isImportNeeded()) {
       importXmlData(xmlUrl, onSuccess, onError);
     }
   }, 60000); // Check every minute if import is needed (but only import if an hour has passed)
@@ -142,7 +160,7 @@ export const stopScheduledImport = (): void => {
   if (importInterval !== null) {
     clearInterval(importInterval);
     importInterval = null;
-    console.log('Scheduled XML import stopped');
+    console.log('Importação programada de XML interrompida');
   }
 };
 
@@ -152,3 +170,9 @@ export const getLastImportTime = (): Date | null => {
   return lastImportStr ? new Date(Number(lastImportStr)) : null;
 };
 
+// Declare toast for type safety with window
+declare global {
+  interface Window {
+    toast?: (props: { title: string; description: string; variant?: string }) => void;
+  }
+}
