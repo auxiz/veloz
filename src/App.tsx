@@ -11,6 +11,7 @@ import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard"; 
 import NotFound from "./pages/NotFound";
+import ComparisonPage from "./pages/ComparisonPage";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/vehicles/:id" element={<VehicleDetail />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/compare" element={<ComparisonPage />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<Dashboard />} />

@@ -4,11 +4,15 @@ import { Link } from 'react-router-dom';
 import { Vehicle } from '@/types/vehicle';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Compare } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
+import { useComparisonStore } from '@/store/comparisonStore';
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -39,6 +43,24 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
   totalPages = 1,
   totalVehicles = 0
 }) => {
+  const { toast } = useToast();
+  const { vehiclesToCompare, addVehicleToCompare, removeVehicleFromCompare, maxVehiclesReached } = useComparisonStore();
+
+  const handleCompareToggle = (vehicle: Vehicle, checked: boolean) => {
+    if (checked) {
+      const added = addVehicleToCompare(vehicle);
+      if (!added) {
+        toast({
+          title: "Limite atingido",
+          description: "Você só pode comparar até 3 veículos ao mesmo tempo.",
+          variant: "destructive"
+        });
+      }
+    } else {
+      removeVehicleFromCompare(vehicle.id);
+    }
+  };
+  
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -91,7 +113,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
       
       // Add ellipsis after first page if needed
       if (startPage > 2) {
-        pageNumbers.push('...');
+        pageNumbers.push('ellipsis1');
       }
       
       // Add the visible page numbers
@@ -101,7 +123,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
       
       // Add ellipsis before last page if needed
       if (endPage < totalPages - 1) {
-        pageNumbers.push('...');
+        pageNumbers.push('ellipsis2');
       }
       
       // Always include last page if more than 1 page
@@ -113,74 +135,100 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
     return pageNumbers;
   };
 
+  const showCompareButton = vehiclesToCompare.length >= 2;
+
   return (
     <div>
-      {/* Page size selector */}
       <div className="flex justify-between items-center mb-4">
         <div className="text-sm text-gray-400">
           Exibindo <span className="text-veloz-yellow font-medium">{vehicles.length}</span> de <span className="text-veloz-yellow font-medium">{totalVehicles}</span> veículos
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-400">Veículos por página:</span>
-          <Select value={pageSize.toString()} onValueChange={(value) => setPageSize(Number(value))}>
-            <SelectTrigger className="w-[70px] bg-gray-800 border-gray-700">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="6">6</SelectItem>
-              <SelectItem value="12">12</SelectItem>
-              <SelectItem value="24">24</SelectItem>
-            </SelectContent>
-          </Select>
+        
+        <div className="flex items-center gap-4">
+          {showCompareButton && (
+            <Link to="/compare">
+              <Button 
+                variant="veloz" 
+                className="flex gap-1 items-center"
+              >
+                <Compare size={16} /> Comparar ({vehiclesToCompare.length})
+              </Button>
+            </Link>
+          )}
+          
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-400">Veículos por página:</span>
+            <Select value={pageSize.toString()} onValueChange={(value) => setPageSize(Number(value))}>
+              <SelectTrigger className="w-[70px] bg-gray-800 border-gray-700">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="6">6</SelectItem>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="24">24</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
       {/* Vehicle grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {vehicles.map((vehicle) => (
-          <Link to={`/vehicles/${vehicle.id}`} key={vehicle.id} className="group">
-            <Card className="h-full overflow-hidden hover:border-veloz-yellow transition-colors bg-gray-800 border-gray-700 text-white">
-              <div className="relative aspect-[16/10] overflow-hidden bg-gray-900">
-                {vehicle.photos && vehicle.photos.length > 0 ? (
-                  <img 
-                    src={vehicle.photos[0]} 
-                    alt={`${vehicle.brand} ${vehicle.model}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-gray-800">
-                    <p className="text-gray-500">Sem imagem</p>
+          <div key={vehicle.id} className="group relative">
+            <div className="absolute top-2 left-2 z-10 bg-black/70 rounded-full p-1">
+              <Checkbox
+                checked={vehiclesToCompare.some(v => v.id === vehicle.id)}
+                onCheckedChange={(checked) => handleCompareToggle(vehicle, checked === true)}
+                disabled={maxVehiclesReached && !vehiclesToCompare.some(v => v.id === vehicle.id)}
+                className="data-[state=checked]:bg-veloz-yellow data-[state=checked]:text-veloz-black border-veloz-yellow"
+              />
+            </div>
+            
+            <Link to={`/vehicles/${vehicle.id}`} className="block">
+              <Card className="h-full overflow-hidden hover:border-veloz-yellow transition-colors bg-gray-800 border-gray-700 text-white">
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-900">
+                  {vehicle.photos && vehicle.photos.length > 0 ? (
+                    <img 
+                      src={vehicle.photos[0]} 
+                      alt={`${vehicle.brand} ${vehicle.model}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-gray-800">
+                      <p className="text-gray-500">Sem imagem</p>
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2 bg-veloz-yellow px-2 py-1 rounded text-sm font-medium text-veloz-black">
+                    {vehicle.status === 'available' ? 'Disponível' : vehicle.status}
                   </div>
-                )}
-                <div className="absolute top-2 right-2 bg-veloz-yellow px-2 py-1 rounded text-sm font-medium text-veloz-black">
-                  {vehicle.status === 'available' ? 'Disponível' : vehicle.status}
                 </div>
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-bold text-white">{vehicle.brand} {vehicle.model}</h3>
-                <div className="flex justify-between mt-2">
-                  <p className="text-gray-400">{vehicle.year}</p>
-                  <p className="font-bold text-lg text-veloz-yellow">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
-                    {vehicle.transmission}
-                  </span>
-                  <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
-                    {vehicle.fuelType}
-                  </span>
-                  <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
-                    {vehicle.mileage.toLocaleString('pt-BR')} km
-                  </span>
-                </div>
-                <Button 
-                  className="w-full mt-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 flex items-center justify-center"
-                >
-                  Saiba Mais <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          </Link>
+                <CardContent className="p-4">
+                  <h3 className="text-lg font-bold text-white">{vehicle.brand} {vehicle.model}</h3>
+                  <div className="flex justify-between mt-2">
+                    <p className="text-gray-400">{vehicle.year}</p>
+                    <p className="font-bold text-lg text-veloz-yellow">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                      {vehicle.transmission}
+                    </span>
+                    <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                      {vehicle.fuelType}
+                    </span>
+                    <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+                      {vehicle.mileage.toLocaleString('pt-BR')} km
+                    </span>
+                  </div>
+                  <Button 
+                    className="w-full mt-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 flex items-center justify-center"
+                  >
+                    Saiba Mais <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         ))}
       </div>
 
@@ -191,19 +239,18 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious 
-                  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)} 
-                  disabled={currentPage === 1}
-                  className={`${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} bg-gray-800 border-gray-700 text-white`}
+                  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                  className={`${currentPage === 1 ? 'opacity-50 pointer-events-none' : 'cursor-pointer'} bg-gray-800 border-gray-700 text-white`}
                 />
               </PaginationItem>
 
               {getPageNumbers().map((page, index) => (
                 <PaginationItem key={index}>
-                  {page === '...' ? (
-                    <span className="flex items-center justify-center px-4 h-10 text-gray-400">...</span>
+                  {page === 'ellipsis1' || page === 'ellipsis2' ? (
+                    <PaginationEllipsis />
                   ) : (
                     <PaginationLink 
-                      isActive={page === currentPage} 
+                      isActive={page === currentPage}
                       onClick={() => typeof page === 'number' && setCurrentPage(page)}
                       className={`
                         cursor-pointer
@@ -220,9 +267,8 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
 
               <PaginationItem>
                 <PaginationNext 
-                  onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)} 
-                  disabled={currentPage === totalPages}
-                  className={`${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} bg-gray-800 border-gray-700 text-white`}
+                  onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                  className={`${currentPage === totalPages ? 'opacity-50 pointer-events-none' : 'cursor-pointer'} bg-gray-800 border-gray-700 text-white`}
                 />
               </PaginationItem>
             </PaginationContent>
