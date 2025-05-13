@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Vehicle } from '@/types/vehicle';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ChevronLeft, Compare } from 'lucide-react';
+import { ChevronRight, ChevronLeft, BarChart2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
@@ -151,7 +150,7 @@ const VehicleGrid: React.FC<VehicleGridProps> = ({
                 variant="veloz" 
                 className="flex gap-1 items-center"
               >
-                <Compare size={16} /> Comparar ({vehiclesToCompare.length})
+                <BarChart2 size={16} /> Comparar ({vehiclesToCompare.length})
               </Button>
             </Link>
           )}
