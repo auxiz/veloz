@@ -26,7 +26,7 @@ const AdminNavbar = () => {
         
         <div className="flex space-x-2 items-center">
           <Button 
-            variant="veloz-dark" 
+            variant="veloz-outline" 
             size="sm"
             onClick={() => navigate('/admin')}
             className="font-bold flex items-center gap-1"
@@ -36,7 +36,7 @@ const AdminNavbar = () => {
           </Button>
           
           <Button 
-            variant="veloz-dark"
+            variant="veloz-outline"
             size="sm"
             onClick={() => navigate('/admin')}
             className="font-bold flex items-center gap-1"
@@ -46,7 +46,7 @@ const AdminNavbar = () => {
           </Button>
           
           <Button 
-            variant="veloz-dark"
+            variant="veloz-outline"
             size="sm"
             onClick={() => window.alert('Settings page not yet implemented')}
             className="font-bold flex items-center gap-1"

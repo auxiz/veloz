@@ -54,7 +54,7 @@ const Dashboard = () => {
         />
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full animate-fade-in">
-          <TabsList className="mb-6 bg-gray-800 border border-gray-700">
+          <TabsList className="mb-6 bg-veloz-black border border-veloz-yellow/20">
             <TabsTrigger 
               value="upload" 
               className="data-[state=active]:bg-veloz-yellow data-[state=active]:text-veloz-black font-bold transition-all duration-300"

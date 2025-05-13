@@ -24,7 +24,7 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   
   if (loading) {
     return (
-      <Card className="bg-gray-800 border-gray-700 shadow-md animate-pulse">
+      <Card className="bg-veloz-black border-veloz-yellow/20 shadow-md animate-pulse">
         <CardContent className="flex flex-col items-center justify-center py-16">
           <Loader2 className="h-12 w-12 text-veloz-yellow animate-spin mb-4" />
           <p className="text-xl text-gray-400 mb-2 font-montserrat">Carregando inventário...</p>
@@ -36,10 +36,10 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   
   if (vehicles.length === 0) {
     return (
-      <Card className="bg-gray-800 border-gray-700 shadow-md animate-entrance">
+      <Card className="bg-veloz-black border-veloz-yellow/20 shadow-md animate-entrance">
         <CardContent className="flex flex-col items-center justify-center py-16">
           <AlertTriangle className="h-16 w-16 text-veloz-yellow mb-6" />
-          <p className="text-2xl text-gray-300 mb-3 font-montserrat font-bold">Seu inventário está vazio</p>
+          <p className="text-2xl text-white mb-3 font-montserrat font-bold">Seu inventário está vazio</p>
           <p className="text-gray-400 max-w-md text-center mb-6">
             Importe veículos usando o recurso de importação XML ou adicione-os manualmente.
           </p>
@@ -54,17 +54,17 @@ const InventorySection: React.FC<InventorySectionProps> = ({
   
   return (
     <div className="space-y-6 animate-entrance">
-      <div className="flex justify-between items-center mb-4 bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <div className="flex justify-between items-center mb-4 bg-veloz-black p-4 rounded-lg border border-veloz-yellow/20">
         <div className="text-sm text-gray-300">
           <span className="font-bold text-veloz-yellow">{vehicles.length}</span> veículos encontrados
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-400">Ordenar por:</span>
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px] bg-gray-900 border-gray-700 text-gray-300">
+            <SelectTrigger className="w-[180px] bg-veloz-black border-veloz-yellow/20 text-gray-300">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-gray-900 border-gray-700">
+            <SelectContent className="bg-veloz-black border-veloz-yellow/20">
               <SelectItem value="newest">Mais recentes</SelectItem>
               <SelectItem value="oldest">Mais antigos</SelectItem>
               <SelectItem value="price-high">Preço (maior)</SelectItem>

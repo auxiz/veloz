@@ -32,8 +32,8 @@ const VehicleGridCard: React.FC<VehicleGridCardProps> = ({
       </div>
       
       <Link to={`/vehicles/${vehicle.id}`} className="block">
-        <Card className="h-full overflow-hidden hover:border-veloz-yellow transition-colors bg-gray-800 border-gray-700 text-white">
-          <div className="relative aspect-[16/10] overflow-hidden bg-gray-900">
+        <Card className="h-full overflow-hidden hover:border-veloz-yellow transition-colors bg-veloz-black border-veloz-yellow/20 text-white">
+          <div className="relative aspect-[16/10] overflow-hidden bg-veloz-black">
             {vehicle.photos && vehicle.photos.length > 0 ? (
               <img 
                 src={vehicle.photos[0]} 
@@ -41,7 +41,7 @@ const VehicleGridCard: React.FC<VehicleGridCardProps> = ({
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="flex items-center justify-center h-full bg-gray-800">
+              <div className="flex items-center justify-center h-full bg-veloz-black">
                 <p className="text-gray-500">Sem imagem</p>
               </div>
             )}
@@ -56,18 +56,18 @@ const VehicleGridCard: React.FC<VehicleGridCardProps> = ({
               <p className="font-bold text-lg text-veloz-yellow">R$ {vehicle.price.toLocaleString('pt-BR')}</p>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+              <span className="inline-block bg-veloz-black text-gray-300 text-xs px-2 py-1 rounded border border-veloz-yellow/20">
                 {vehicle.transmission}
               </span>
-              <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+              <span className="inline-block bg-veloz-black text-gray-300 text-xs px-2 py-1 rounded border border-veloz-yellow/20">
                 {vehicle.fuelType}
               </span>
-              <span className="inline-block bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">
+              <span className="inline-block bg-veloz-black text-gray-300 text-xs px-2 py-1 rounded border border-veloz-yellow/20">
                 {vehicle.mileage.toLocaleString('pt-BR')} km
               </span>
             </div>
             <Button 
-              className="w-full mt-4 bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 flex items-center justify-center"
+              className="w-full mt-4"
             >
               Saiba Mais <ChevronRight className="ml-1 h-4 w-4" />
             </Button>

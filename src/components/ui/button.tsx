@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
+        default: "bg-veloz-yellow text-veloz-black hover:bg-veloz-black hover:text-veloz-yellow transform hover:-translate-y-0.5 transition-all duration-300",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 transform hover:-translate-y-0.5 transition-all duration-300",
         outline:
@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
         ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
         link: "text-veloz-yellow underline-offset-4 hover:underline hover:opacity-80 transition-all duration-300",
-        veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 hover:text-veloz-black font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300",
+        veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-black hover:text-veloz-yellow font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300",
         "veloz-outline": "border-2 border-veloz-yellow bg-transparent text-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold transform hover:-translate-y-0.5 transition-all duration-300",
         "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold shadow-md transform hover:-translate-y-0.5 transition-all duration-300",
         "veloz-glow": "bg-veloz-yellow text-veloz-black border border-veloz-yellow font-bold shadow-yellow-glow hover:shadow-yellow-glow hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300",
