@@ -38,7 +38,7 @@ const AboutSection = () => {
             </ul>
           </div>
           <div className="rounded-lg overflow-hidden shadow-md">
-            <AspectRatio ratio={16 / 9} className="bg-veloz-dark-gray">
+            <AspectRatio ratio={16 / 9}>
               <img 
                 src="https://revendedor-teste.ecosysauto.site/images/home/car-header.png" 
                 alt="VELOZ MOTORS showroom" 
