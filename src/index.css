@@ -110,6 +110,31 @@
   p {
     @apply font-montserrat;
   }
+
+  /* Typography scale */
+  h1 {
+    @apply text-4xl md:text-5xl leading-tight;
+  }
+  
+  h2 {
+    @apply text-3xl md:text-4xl leading-tight;
+  }
+  
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+  
+  h5 {
+    @apply text-lg md:text-xl;
+  }
+  
+  h6 {
+    @apply text-base md:text-lg;
+  }
 }
 
 /* Modern animations */
@@ -140,6 +165,30 @@
     @apply opacity-0 translate-y-4;
     animation: entrance 0.6s ease-out 0.4s forwards;
   }
+
+  .hover-elevation {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .hover-highlight {
+    @apply transition-all duration-300 hover:border-veloz-yellow;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 15px rgba(255, 221, 51, 0.3);
+  }
+  
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 221, 51, 0.5);
+  }
 }
 
 @keyframes entrance {
@@ -153,6 +202,46 @@
   }
 }
 
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes border-pulse {
+  0%, 100% {
+    border-color: rgba(255, 221, 51, 0.3);
+  }
+  50% {
+    border-color: rgba(255, 221, 51, 0.8);
+  }
+}
+
 /* Veloz Motors custom styling */
 .veloz-gradient {
   background: linear-gradient(135deg, #000000 0%, #222222 100%);
@@ -162,6 +251,28 @@
   box-shadow: 0 4px 12px rgba(255, 221, 51, 0.15);
 }
 
+.card-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.hover-shadow-strong {
+  transition: all 0.3s ease;
+}
+
+.hover-shadow-strong:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Improved card design */
+.veloz-card {
+  @apply rounded-lg overflow-hidden transition-all duration-300 border border-gray-800 bg-gray-900;
+}
+
+.veloz-card:hover {
+  @apply border-veloz-yellow shadow-veloz transform -translate-y-1;
+}
+
 /* Responsive image handling */
 .img-cover {
   @apply w-full h-full object-cover;
@@ -169,4 +280,52 @@
 
 .img-contain {
   @apply w-full h-full object-contain;
+}
+
+/* Feature highlight */
+.feature-highlight {
+  @apply relative overflow-hidden rounded-lg p-6 border border-gray-800 transition-all duration-300;
+}
+
+.feature-highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(255, 221, 51, 0.1), transparent 70%);
+  z-index: 0;
+  transition: all 0.3s ease;
+}
+
+.feature-highlight:hover::before {
+  background: radial-gradient(circle at top right, rgba(255, 221, 51, 0.2), transparent 70%);
+}
+
+.feature-highlight > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Stylized dividers */
+.divider-yellow {
+  @apply h-1 bg-veloz-yellow rounded-full w-20 my-4;
+}
+
+/* Button animations */
+.btn-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 221, 51, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 221, 51, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 221, 51, 0);
+  }
 }

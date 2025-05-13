@@ -73,6 +73,8 @@ export default {
 					white: '#FFFFFF',
 					'dark-gray': '#222222',
 					'light-gray': '#EEEEEE',
+					'yellow-light': '#FFF2B0',
+					'yellow-dark': '#E6C41F',
 				}
 			},
 			borderRadius: {
@@ -150,6 +152,14 @@ export default {
 				'bounce': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-5px)' }
+				},
+				'pulse': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
+				},
+				'glow': {
+					'0%, 100%': { boxShadow: '0 0 5px rgba(255, 221, 51, 0.5)' },
+					'50%': { boxShadow: '0 0 20px rgba(255, 221, 51, 0.8)' }
 				}
 			},
 			animation: {
@@ -160,17 +170,29 @@ export default {
 				'slide-in-right': 'slide-in-right 0.4s ease-out',
 				'slide-in-left': 'slide-in-left 0.4s ease-out',
 				'slide-up': 'slide-up 0.3s ease-out',
-				'bounce': 'bounce 2s ease-in-out infinite'
+				'bounce': 'bounce 2s ease-in-out infinite',
+				'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+				'glow': 'glow 1.5s ease-in-out infinite',
 			},
 			boxShadow: {
 				'veloz': '0 4px 14px 0 rgba(255, 221, 51, 0.2)',
 				'card': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-				'hover': '0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.1)'
+				'hover': '0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.1)',
+				'glow': '0 0 15px rgba(255, 221, 51, 0.3)',
+				'button': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+				'button-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+				'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+				'yellow-glow': '0 0 15px rgba(255, 221, 51, 0.3)',
 			},
 			transitionProperty: {
 				'height': 'height',
 				'spacing': 'margin, padding',
 				'transform': 'transform'
+			},
+			backgroundImage: {
+				'veloz-gradient': 'linear-gradient(135deg, #000000 0%, #222222 100%)',
+				'yellow-gradient': 'linear-gradient(135deg, #FFDD33 0%, #E6C41F 100%)',
+				'card-gradient': 'linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)',
 			},
 		}
 	},

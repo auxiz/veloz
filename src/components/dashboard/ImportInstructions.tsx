@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowDownToLine, Info } from 'lucide-react';
 
 interface ImportInstructionsProps {
   xmlUrl: string;
@@ -8,25 +9,27 @@ interface ImportInstructionsProps {
 
 const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
   return (
-    <Card className="col-span-1 bg-gray-800 border-gray-700">
-      <CardHeader>
-        <CardTitle className="text-veloz-yellow">XML Import Instructions</CardTitle>
+    <Card className="col-span-1 bg-gray-800 border-gray-700 overflow-hidden transition-all duration-300 hover:border-veloz-yellow hover:shadow-veloz animate-entrance">
+      <CardHeader className="bg-gray-900 border-b border-gray-700">
+        <CardTitle className="text-veloz-yellow flex items-center gap-2">
+          <Info className="h-5 w-5" /> 
+          <span>Instruções de Importação XML</span>
+        </CardTitle>
         <CardDescription className="text-gray-400">
-          Connected to RevendaMais XML Feed
+          Conectado ao Feed XML RevendaMais
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ol className="list-decimal list-inside space-y-2 text-gray-300">
-          <li>The system automatically imports vehicle data every hour.</li>
-          <li>You can also manually import by clicking the import button.</li>
-          <li>New vehicles will be added to your inventory.</li>
-          <li>Existing vehicles will remain unchanged.</li>
+      <CardContent className="pt-6">
+        <ol className="list-decimal list-inside space-y-3 text-gray-300">
+          <li className="pb-2 border-b border-gray-700">O sistema importa automaticamente os dados dos veículos a cada hora.</li>
+          <li className="pb-2 border-b border-gray-700">Você também pode importar manualmente clicando no botão importar.</li>
+          <li className="pb-2 border-b border-gray-700">Novos veículos serão adicionados ao seu inventário.</li>
+          <li>Veículos existentes permanecerão inalterados.</li>
         </ol>
       </CardContent>
-      <CardFooter>
-        <p className="text-xs text-gray-400">
-          XML feed URL: {xmlUrl.substring(0, 50)}...
-        </p>
+      <CardFooter className="flex items-center gap-2 bg-gray-900 border-t border-gray-700 text-xs text-gray-400">
+        <ArrowDownToLine className="h-4 w-4 text-veloz-yellow" />
+        <span>XML feed URL: {xmlUrl.substring(0, 40)}...</span>
       </CardFooter>
     </Card>
   );

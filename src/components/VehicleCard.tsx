@@ -4,8 +4,9 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Vehicle } from '@/types/vehicle';
-import { Eye, Pencil } from 'lucide-react';
+import { Eye, Pencil, Calendar, MapPin, Fuel, Settings } from 'lucide-react';
 import VehicleBadge from './VehicleBadge';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -22,17 +23,19 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
   };
   
   return (
-    <Card className="h-full flex flex-col overflow-hidden bg-gray-800 border-gray-700 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-      <div className="aspect-[16/9] relative bg-gray-900 overflow-hidden">
+    <Card className="h-full flex flex-col overflow-hidden bg-gray-800 border-gray-700 shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:border-veloz-yellow animate-entrance">
+      <div className="aspect-[16/9] relative bg-gray-900 overflow-hidden group">
         {vehicle.photos && vehicle.photos.length > 0 ? (
           <img 
             src={vehicle.photos[0]} 
             alt={`${vehicle.brand} ${vehicle.model}`}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
-            No image
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
           </div>
         )}
         <div className="absolute top-2 right-2">
@@ -42,18 +45,38 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
       
       <CardHeader className="pb-2">
         <div>
-          <h3 className="text-lg font-bold text-white">{vehicle.brand} {vehicle.model}</h3>
-          <p className="text-gray-400">{vehicle.year} • {vehicle.mileage} km</p>
+          <h3 className="text-lg font-bold text-white mb-1">{vehicle.brand} {vehicle.model}</h3>
+          <div className="flex items-center gap-1 text-gray-400 text-sm">
+            <Calendar className="h-3 w-3" />
+            <span>{vehicle.year}</span>
+            <span className="mx-1">•</span>
+            <MapPin className="h-3 w-3" />
+            <span>{vehicle.mileage.toLocaleString('pt-BR')} km</span>
+          </div>
         </div>
       </CardHeader>
       
       <CardContent className="pb-2 flex-grow">
-        <p className="text-2xl font-bold text-veloz-yellow mb-2">
+        <p className="text-2xl font-bold text-veloz-yellow mb-3 flex items-center gap-2">
           {formatCurrency(vehicle.price)}
+          {vehicle.price > 100000 && (
+            <HoverCard>
+              <HoverCardTrigger>
+                <Badge variant="outline" className="bg-veloz-yellow text-veloz-black cursor-help">Premium</Badge>
+              </HoverCardTrigger>
+              <HoverCardContent className="bg-gray-900 border-gray-700 text-white w-64">
+                <p className="text-sm">Este é um veículo de alto valor, com características premium.</p>
+              </HoverCardContent>
+            </HoverCard>
+          )}
         </p>
         <div className="flex flex-wrap gap-1 mt-2">
-          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600">{vehicle.fuelType}</Badge>
-          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600">{vehicle.transmission}</Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600 flex items-center gap-1">
+            <Fuel className="h-3 w-3" /> {vehicle.fuelType}
+          </Badge>
+          <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600 flex items-center gap-1">
+            <Settings className="h-3 w-3" /> {vehicle.transmission}
+          </Badge>
           <Badge variant="outline" className="bg-gray-700 text-gray-200 transition-colors hover:bg-gray-600">{vehicle.color}</Badge>
         </div>
       </CardContent>
@@ -66,7 +89,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
             className="flex-1"
             onClick={() => onView(vehicle)}
           >
-            <Eye className="h-4 w-4 mr-1" /> View
+            <Eye className="h-4 w-4 mr-1" /> Visualizar
           </Button>
           <Button 
             variant="veloz" 
@@ -74,7 +97,7 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle, onView, onEdit }) =>
             className="flex-1"
             onClick={() => onEdit(vehicle)}
           >
-            <Pencil className="h-4 w-4 mr-1" /> Edit
+            <Pencil className="h-4 w-4 mr-1" /> Editar
           </Button>
         </div>
       </CardFooter>

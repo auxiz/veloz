@@ -10,29 +10,38 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black",
+        default: "bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 transform hover:-translate-y-0.5 transition-all duration-300",
         outline:
-          "border border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black",
+          "border border-veloz-yellow bg-transparent text-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-black",
-        ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-black",
-        link: "text-veloz-yellow underline-offset-4 hover:underline hover:opacity-80",
-        veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 hover:text-veloz-black font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
-        "veloz-outline": "border-2 border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black font-bold",
-        "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold shadow-md",
+          "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
+        ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-black transform hover:-translate-y-0.5 transition-all duration-300",
+        link: "text-veloz-yellow underline-offset-4 hover:underline hover:opacity-80 transition-all duration-300",
+        veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 hover:text-veloz-black font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300",
+        "veloz-outline": "border-2 border-veloz-yellow bg-transparent text-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold transform hover:-translate-y-0.5 transition-all duration-300",
+        "veloz-dark": "bg-veloz-black text-veloz-yellow border border-veloz-yellow hover:bg-veloz-yellow hover:text-veloz-black font-bold shadow-md transform hover:-translate-y-0.5 transition-all duration-300",
+        "veloz-glow": "bg-veloz-yellow text-veloz-black border border-veloz-yellow font-bold shadow-yellow-glow hover:shadow-yellow-glow hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-12 rounded-md px-8 text-base",
+        xl: "h-14 rounded-lg px-10 text-lg",
         icon: "h-10 w-10",
       },
+      animation: {
+        default: "",
+        pulse: "animate-pulse",
+        bounce: "animate-bounce",
+        glow: "animate-glow",
+      }
     },
     defaultVariants: {
       variant: "default",
       size: "default",
+      animation: "default",
     },
   }
 )
@@ -44,11 +53,11 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, animation, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, animation, className }))}
         ref={ref}
         {...props}
       />
