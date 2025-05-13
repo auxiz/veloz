@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { XmlImportResult, Vehicle } from '@/types/vehicle';
 import AdminNavbar from '@/components/AdminNavbar';
 import XmlUploader from '@/components/XmlUploader';
@@ -12,6 +11,17 @@ const Index = () => {
   const { toast } = useToast();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [activeTab, setActiveTab] = useState('upload');
+  const [xmlUrl, setXmlUrl] = useState(() => {
+    return localStorage.getItem('xmlUrlConfig') || "";
+  });
+  
+  useEffect(() => {
+    // Initialize from localStorage if available
+    const savedUrl = localStorage.getItem('xmlUrlConfig');
+    if (savedUrl) {
+      setXmlUrl(savedUrl);
+    }
+  }, []);
   
   const handleImportComplete = (result: XmlImportResult) => {
     if (result.success && result.vehicles && result.vehicles.length > 0) {
@@ -56,6 +66,11 @@ const Index = () => {
     }
   };
   
+  const handleXmlUrlChange = (url: string) => {
+    setXmlUrl(url);
+    localStorage.setItem('xmlUrlConfig', url);
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavbar />
@@ -98,7 +113,10 @@ const Index = () => {
               </Card>
               
               <div className="col-span-1 md:col-span-2">
-                <XmlUploader onImportComplete={handleImportComplete} />
+                <XmlUploader 
+                  onImportComplete={handleImportComplete} 
+                  xmlUrl={xmlUrl} 
+                />
               </div>
             </div>
           </TabsContent>
