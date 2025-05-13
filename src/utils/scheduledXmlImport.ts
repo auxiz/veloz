@@ -62,14 +62,31 @@ export const importXmlData = async (
   isImportInProgress = true;
   
   try {
-    console.log('Buscando XML de:', xmlUrl);
-    const response = await fetch(xmlUrl);
+    // Check if CORS bypass is enabled
+    const useCorsBypass = localStorage.getItem('useCorsBypass') === 'true';
+    const targetUrl = useCorsBypass 
+      ? `https://corsproxy.io/?${encodeURIComponent(xmlUrl)}`
+      : xmlUrl;
+    
+    console.log(`Buscando XML de: ${useCorsBypass ? 'CORS proxy -> ' : ''}${xmlUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      headers: {
+        'Accept': 'application/xml, text/xml, */*'
+      }
+    });
     
     if (!response.ok) {
       throw new Error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
     }
     
     const xmlContent = await response.text();
+    
+    // For debugging, show a sample of the XML content
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('XML Content (sample):', xmlContent.substring(0, 200) + '...');
+    }
+    
     const result = await parseVehiclesXml(xmlContent);
     
     if (result.success && result.vehicles) {
@@ -106,6 +123,17 @@ export const importXmlData = async (
   } catch (error) {
     console.error('Erro ao importar dados XML:', error);
     
+    // Provide more helpful error messages for common issues
+    let errorMessage = error instanceof Error ? error.message : "Ocorreu um erro desconhecido";
+    let errorForUser = errorMessage;
+    
+    if (errorMessage.includes('CORS') || errorMessage.includes('Failed to fetch') || errorMessage.includes('Network Error')) {
+      const useCorsBypass = localStorage.getItem('useCorsBypass') === 'true';
+      errorForUser = useCorsBypass 
+        ? "Erro de CORS persistiu mesmo com proxy. Tente um arquivo XML hospedado no mesmo domínio."
+        : "Erro de CORS detectado. Ative a opção 'Usar proxy CORS' nas configurações e tente novamente.";
+    }
+    
     if (onError && error instanceof Error) {
       onError(error);
     }
@@ -114,15 +142,15 @@ export const importXmlData = async (
     if (typeof window !== 'undefined' && window.toast) {
       window.toast({
         title: "Falha na Importação Automática",
-        description: error instanceof Error ? error.message : "Ocorreu um erro desconhecido",
+        description: errorForUser,
         variant: "destructive"
       });
     }
     
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Ocorreu um erro desconhecido",
-      errors: [error instanceof Error ? error.message : String(error)]
+      message: errorForUser,
+      errors: [errorMessage]
     };
   } finally {
     isImportInProgress = false;

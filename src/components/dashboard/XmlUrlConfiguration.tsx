@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Check, LinkIcon } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 interface XmlUrlConfigurationProps {
   onUrlChange: (url: string) => void;
@@ -16,6 +17,9 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
   const { toast } = useToast();
   const [xmlUrl, setXmlUrl] = useState(currentUrl);
   const [isSaved, setIsSaved] = useState(false);
+  const [useCorsBypass, setUseCorsBypass] = useState(() => {
+    return localStorage.getItem('useCorsBypass') === 'true';
+  });
 
   const handleSave = () => {
     if (!xmlUrl || !xmlUrl.trim()) {
@@ -31,6 +35,7 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
     try {
       new URL(xmlUrl);
       localStorage.setItem('xmlUrlConfig', xmlUrl);
+      localStorage.setItem('useCorsBypass', useCorsBypass.toString());
       onUrlChange(xmlUrl);
       
       setIsSaved(true);
@@ -47,6 +52,11 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
         variant: "destructive"
       });
     }
+  };
+  
+  const handleCorsToggle = (checked: boolean) => {
+    setUseCorsBypass(checked);
+    localStorage.setItem('useCorsBypass', checked.toString());
   };
 
   return (
@@ -71,8 +81,25 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
               />
             </div>
           </div>
+          
+          <div className="flex items-center justify-between bg-gray-900 p-3 rounded-md">
+            <div className="space-y-1">
+              <Label htmlFor="use-cors-bypass" className="font-medium text-sm text-gray-300">
+                Usar proxy CORS
+              </Label>
+              <p className="text-xs text-gray-400">
+                Ative esta opção se estiver enfrentando erros "Failed to fetch" ou "CORS"
+              </p>
+            </div>
+            <Switch 
+              id="use-cors-bypass" 
+              checked={useCorsBypass}
+              onCheckedChange={handleCorsToggle}
+            />
+          </div>
+          
           <div className="text-sm text-gray-400">
-            <p>Insira a URL do arquivo XML hospedado no seu servidor Hostinger.</p>
+            <p>Insira a URL do arquivo XML hospedado no seu servidor.</p>
             <p className="mt-1">O sistema importará automaticamente os veículos deste arquivo.</p>
           </div>
         </div>

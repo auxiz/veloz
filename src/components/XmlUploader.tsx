@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { parseVehiclesXml } from '@/utils/xmlParser';
 import { XmlImportResult } from '@/types/vehicle';
-import { FileUp, Clock } from 'lucide-react';
+import { FileUp, Clock, AlertTriangle } from 'lucide-react';
 import { getLastImportTime, isImportNeeded } from '@/utils/scheduledXmlImport';
 import { format } from 'date-fns';
 
@@ -57,8 +57,16 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
       setErrors([]);
       setProgress(10);
 
+      // Check if we should use CORS proxy
+      const useCorsBypass = localStorage.getItem('useCorsBypass') === 'true';
+      const targetUrl = useCorsBypass 
+        ? `https://corsproxy.io/?${encodeURIComponent(xmlUrl)}`
+        : xmlUrl;
+        
+      console.log(`Fetching XML from: ${useCorsBypass ? 'CORS proxy -> ' : ''}${xmlUrl}`);
+
       // Fetch the XML content from the URL
-      const response = await fetch(xmlUrl);
+      const response = await fetch(targetUrl);
       
       if (!response.ok) {
         throw new Error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
@@ -66,6 +74,11 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
 
       setProgress(50);
       const xmlContent = await response.text();
+      
+      // For debugging, show a sample of the XML content
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('XML Content (sample):', xmlContent.substring(0, 200) + '...');
+      }
       
       // Parse the XML content
       const result = await parseVehiclesXml(xmlContent);
@@ -99,12 +112,27 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
     } catch (error) {
       setIsLoading(false);
       setProgress(0);
-      setErrors([error instanceof Error ? error.message : String(error)]);
+      
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setErrors([errorMessage]);
+      
+      // Provide more helpful error messages for common issues
+      let description = "Ocorreu um erro ao processar os dados XML.";
+      
+      if (errorMessage.includes('CORS') || errorMessage.includes('Failed to fetch') || errorMessage.includes('Network Error')) {
+        const useCorsBypass = localStorage.getItem('useCorsBypass') === 'true';
+        description = useCorsBypass 
+          ? "Erro de CORS persistiu mesmo com proxy. Tente um arquivo XML hospedado no mesmo domínio."
+          : "Erro de CORS detectado. Ative a opção 'Usar proxy CORS' nas configurações e tente novamente.";
+      }
+      
       toast({
         title: "Falha na Importação",
-        description: "Ocorreu um erro ao processar os dados XML.",
+        description: description,
         variant: "destructive"
       });
+      
+      console.error('Erro ao importar dados XML:', error);
     }
   };
 
@@ -159,12 +187,18 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
 
           {errors.length > 0 && (
             <div className="bg-red-900/20 border border-red-700 text-red-200 p-3 rounded">
-              <h4 className="font-semibold mb-1">Erros:</h4>
-              <ul className="list-disc list-inside">
+              <h4 className="flex items-center gap-2 font-semibold mb-2">
+                <AlertTriangle className="h-4 w-4" />
+                <span>Erros detectados:</span>
+              </h4>
+              <ul className="list-disc list-inside max-h-40 overflow-y-auto">
                 {errors.map((error, index) => (
-                  <li key={index}>{error}</li>
+                  <li key={index} className="text-sm mb-1">{error}</li>
                 ))}
               </ul>
+              <div className="mt-3 pt-3 border-t border-red-700/50 text-xs">
+                <p>Dica: Se o erro for relacionado a CORS, tente ativar a opção "Usar proxy CORS" nas configurações.</p>
+              </div>
             </div>
           )}
 
