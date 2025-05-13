@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 const AboutSection = () => {
   return (
@@ -36,14 +37,15 @@ const AboutSection = () => {
               </li>
             </ul>
           </div>
-          <div className="relative h-96 rounded-lg overflow-hidden">
-            <img 
-              src="https://revendedor-teste.ecosysauto.site/images/home/car-header.png" 
-              alt="VELOZ MOTORS showroom" 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-veloz-black to-transparent opacity-70"></div>
-            <div className="absolute bottom-0 left-0 right-0 p-6">
+          <div className="rounded-lg overflow-hidden shadow-md">
+            <AspectRatio ratio={16 / 9} className="bg-veloz-dark-gray">
+              <img 
+                src="https://revendedor-teste.ecosysauto.site/images/home/car-header.png" 
+                alt="VELOZ MOTORS showroom" 
+                className="w-full h-full object-contain"
+              />
+            </AspectRatio>
+            <div className="bg-veloz-black p-6">
               <Button
                 asChild
                 className="bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90"
