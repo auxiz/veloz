@@ -10,14 +10,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-white",
+        default: "bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-white",
+          "border border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-white",
-        ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-white",
+          "bg-secondary text-secondary-foreground hover:bg-veloz-yellow hover:text-veloz-black",
+        ghost: "bg-transparent hover:bg-veloz-yellow hover:text-veloz-black",
         link: "text-veloz-yellow underline-offset-4 hover:underline hover:opacity-80",
         veloz: "bg-veloz-yellow text-veloz-black hover:bg-veloz-yellow/90 hover:text-veloz-black font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
         "veloz-outline": "border-2 border-veloz-yellow bg-veloz-black text-veloz-white hover:bg-veloz-yellow hover:text-veloz-black font-bold",
