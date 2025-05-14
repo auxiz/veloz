@@ -1,4 +1,5 @@
 
+import React from "react"; // Importante importar explicitamente o React
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,32 +14,44 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ComparisonPage from "./pages/ComparisonPage";
 
-const queryClient = new QueryClient();
+// Criar uma instância QueryClient fora do componente
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false
+    }
+  }
+});
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/vehicles" element={<PublicVehicles />} />
-          <Route path="/vehicles/:id" element={<VehicleDetail />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/compare" element={<ComparisonPage />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin" element={<Dashboard />} />
-          
-          {/* Catch-all route for 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/vehicles" element={<PublicVehicles />} />
+              <Route path="/vehicles/:id" element={<VehicleDetail />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/compare" element={<ComparisonPage />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<Dashboard />} />
+              
+              {/* Catch-all route for 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;
