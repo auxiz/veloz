@@ -41,18 +41,19 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
                     <h4 className="font-medium mb-1">Estruturas XML suportadas:</h4>
                     <ul className="list-disc list-inside text-gray-400">
                       <li>Formato padrão: <code>&lt;vehicle&gt;</code> ou <code>&lt;item&gt;</code> como tags principais</li>
-                      <li>Formato AD: <code>&lt;AD&gt;</code> ou <code>&lt;ad&gt;</code> como tags de anúncio</li>
+                      <li><strong className="text-veloz-yellow">Formato AD:</strong> <code>&lt;AD&gt;</code> ou <code>&lt;ad&gt;</code> como tags de anúncio</li>
                       <li>Outros formatos comuns: <code>&lt;product&gt;</code>, <code>&lt;car&gt;</code>, <code>&lt;entry&gt;</code></li>
                     </ul>
                   </div>
                   
                   <div>
                     <h4 className="font-medium mb-1">Campos suportados:</h4>
-                    <div className="bg-gray-900 p-3 rounded-md text-xs space-y-1">
+                    <div className="bg-gray-900 p-3 rounded-md text-xs space-y-2">
                       <p className="text-green-400 font-medium">Campos em minúsculas:</p>
                       <p className="text-gray-400"><code>brand</code>, <code>model</code>, <code>year</code>, <code>price</code>, <code>mileage</code>/<code>km</code>, <code>fuelType</code>/<code>fuel</code>, <code>transmission</code>/<code>gear</code>, <code>color</code>, <code>photos</code>/<code>images</code>, <code>description</code></p>
                       
                       <p className="text-green-400 font-medium mt-3">Campos em MAIÚSCULAS (formato AD):</p>
+                      <p className="text-yellow-300 font-medium text-xs">Recomendado para melhor compatibilidade</p>
                       <p className="text-gray-400"><code>BRAND</code>/<code>MAKE</code>, <code>MODEL</code>, <code>YEAR</code>, <code>PRICE</code>, <code>KM</code>, <code>FUEL</code>, <code>GEAR</code>, <code>COLOR</code>, <code>IMAGES</code>, <code>DESCRIPTION</code></p>
                       
                       <p className="text-green-400 font-medium mt-3">Campos em português:</p>
@@ -61,7 +62,7 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
                   </div>
                   
                   <div>
-                    <h4 className="font-medium mb-1">Exemplo de formato AD:</h4>
+                    <h4 className="font-medium mb-1">Exemplo de formato AD (Recomendado):</h4>
                     <pre className="bg-gray-900 p-3 rounded-md text-xs overflow-x-auto">
 {`<ADS>
   <AD>
@@ -70,11 +71,42 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
     <YEAR>2022</YEAR>
     <PRICE>120000</PRICE>
     <COLOR>Preto</COLOR>
+    <KM>15000</KM>
+    <FUEL>Gasolina</FUEL>
+    <GEAR>Automático</GEAR>
+    <IMAGES>
+      <IMAGE>https://exemplo.com/foto1.jpg</IMAGE>
+      <IMAGE>https://exemplo.com/foto2.jpg</IMAGE>
+    </IMAGES>
+    <DESCRIPTION>Honda Civic em excelente estado</DESCRIPTION>
   </AD>
   <AD>
     <!-- Outro veículo -->
   </AD>
 </ADS>`}
+                    </pre>
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium mb-1">Estrutura alternativa (minúsculas):</h4>
+                    <pre className="bg-gray-900 p-3 rounded-md text-xs overflow-x-auto">
+{`<vehicles>
+  <vehicle>
+    <brand>Toyota</brand>
+    <model>Corolla</model>
+    <year>2020</year>
+    <price>90000</price>
+    <km>35000</km>
+    <fuel>Flex</fuel>
+    <transmission>Manual</transmission>
+    <color>Branco</color>
+    <photos>
+      <photo>https://exemplo.com/foto1.jpg</photo>
+      <photo>https://exemplo.com/foto2.jpg</photo>
+    </photos>
+    <description>Toyota Corolla seminovo</description>
+  </vehicle>
+</vehicles>`}
                     </pre>
                   </div>
                 </div>
@@ -90,9 +122,24 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
                 <p className="mb-2">Se você encontrar erros "Failed to fetch" ou "CORS error", tente:</p>
                 <ol className="list-decimal list-inside space-y-1 text-gray-400">
                   <li>Verificar se o servidor do XML permite acesso de diferentes origens</li>
-                  <li>Usar um proxy CORS (ativando a opção abaixo)</li>
+                  <li>Usar um proxy CORS (ativando a opção acima nas configurações)</li>
                   <li>Hospedar o arquivo XML no mesmo domínio do site</li>
                 </ol>
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="debugging">
+              <AccordionTrigger className="text-sm text-veloz-yellow flex items-center gap-2">
+                <Info className="h-4 w-4" />
+                Dicas para Resolução de Problemas
+              </AccordionTrigger>
+              <AccordionContent className="text-sm">
+                <ul className="list-disc list-inside space-y-2 text-gray-400">
+                  <li>Certifique-se que seu arquivo XML está bem formatado e válido</li>
+                  <li>Use as ferramentas de teste para validar seu XML antes da importação</li>
+                  <li>Para arquivos grandes, divida-os em partes menores para facilitar o processamento</li>
+                  <li>O sistema detecta automaticamente o formato do XML, mas seguir os formatos recomendados garante melhor compatibilidade</li>
+                </ul>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
