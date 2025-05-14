@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import ImportSection from '@/components/dashboard/ImportSection';
 import InventorySection from '@/components/dashboard/InventorySection';
+import TestingTools from '@/components/dashboard/TestingTools'; 
 import { useVehicleManagement } from '@/hooks/useVehicleManagement';
 import Footer from '@/components/Footer';
 
@@ -13,6 +14,10 @@ const Dashboard = () => {
   const [xmlUrl, setXmlUrl] = useState(() => {
     return localStorage.getItem('xmlUrlConfig') || "";
   });
+  const [showTestTools, setShowTestTools] = useState(() => {
+    // Only show test tools in development or if explicitly enabled
+    return process.env.NODE_ENV !== 'production' || localStorage.getItem('showTestTools') === 'true';
+  });
 
   useEffect(() => {
     // Initialize from localStorage if available
@@ -20,7 +25,20 @@ const Dashboard = () => {
     if (savedUrl) {
       setXmlUrl(savedUrl);
     }
-  }, []);
+    
+    // Check for test tools keyboard shortcut
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Alt+T to toggle test tools
+      if (e.altKey && e.key === 't') {
+        const newValue = !showTestTools;
+        setShowTestTools(newValue);
+        localStorage.setItem('showTestTools', String(newValue));
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showTestTools]);
 
   const { 
     vehicles, 
@@ -67,6 +85,14 @@ const Dashboard = () => {
             >
               Inventário ({vehicles.length})
             </TabsTrigger>
+            {showTestTools && (
+              <TabsTrigger 
+                value="testing" 
+                className="data-[state=active]:bg-veloz-yellow data-[state=active]:text-veloz-black font-bold transition-all duration-300"
+              >
+                Ferramentas de Teste
+              </TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="upload" className="space-y-6 animate-entrance">
@@ -87,7 +113,22 @@ const Dashboard = () => {
               />
             </div>
           </TabsContent>
+          
+          {showTestTools && (
+            <TabsContent value="testing" className="animate-entrance">
+              <div className="space-y-6">
+                <TestingTools />
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
+        
+        {/* Small indicator for test tools shortcut */}
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="text-xs text-gray-500 mt-4 text-center">
+            Press Alt+T to {showTestTools ? 'hide' : 'show'} testing tools
+          </div>
+        )}
       </main>
 
       <Footer />
