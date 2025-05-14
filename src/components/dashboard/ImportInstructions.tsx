@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowDownToLine, Info, AlertTriangle, FileXml } from 'lucide-react';
+import { ArrowDownToLine, Info, AlertTriangle, FileText } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface ImportInstructionsProps {
@@ -13,7 +13,7 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
     <Card className="col-span-1 bg-veloz-black border-veloz-yellow/20 overflow-hidden transition-all duration-300 hover:border-veloz-yellow hover:shadow-veloz animate-entrance">
       <CardHeader className="bg-veloz-black border-b border-veloz-yellow/20">
         <CardTitle className="text-veloz-yellow flex items-center gap-2">
-          <FileXml className="h-5 w-5" /> 
+          <FileText className="h-5 w-5" /> 
           <span>Instruções de Importação XML</span>
         </CardTitle>
         <CardDescription className="text-gray-400">
@@ -32,7 +32,7 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="xml-format">
               <AccordionTrigger className="text-sm text-veloz-yellow flex items-center gap-2">
-                <FileXml className="h-4 w-4" />
+                <FileText className="h-4 w-4" />
                 Formatos XML Suportados
               </AccordionTrigger>
               <AccordionContent className="text-sm">
