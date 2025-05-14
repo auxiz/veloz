@@ -12,6 +12,7 @@ export const saveVehiclesToLocalStorage = (vehicles: Vehicle[]): void => {
   try {
     localStorage.setItem('vehicles', JSON.stringify(vehicles));
     localStorage.setItem('lastXmlImportTime', Date.now().toString());
+    console.log(`${vehicles.length} veículos salvos no localStorage`);
   } catch (error) {
     console.error('Falha ao salvar veículos no localStorage:', error);
   }
@@ -21,7 +22,9 @@ export const saveVehiclesToLocalStorage = (vehicles: Vehicle[]): void => {
 export const loadVehiclesFromLocalStorage = (): Vehicle[] => {
   try {
     const storedVehicles = localStorage.getItem('vehicles');
-    return storedVehicles ? JSON.parse(storedVehicles) : [];
+    const vehicles = storedVehicles ? JSON.parse(storedVehicles) : [];
+    console.log(`${vehicles.length} veículos carregados do localStorage`);
+    return vehicles;
   } catch (error) {
     console.error('Falha ao carregar veículos do localStorage:', error);
     return [];
@@ -35,7 +38,11 @@ export const isImportNeeded = (): boolean => {
   
   // Import if it's been more than an hour since the last import
   // 3600000 ms = 1 hour
-  return now - lastImport >= 3600000;
+  const shouldImport = now - lastImport >= 3600000;
+  if (shouldImport) {
+    console.log('Importação necessária: última importação foi há mais de 1 hora');
+  }
+  return shouldImport;
 };
 
 // Function to import XML data
@@ -45,6 +52,7 @@ export const importXmlData = async (
   onError?: (error: Error) => void
 ): Promise<XmlImportResult | null> => {
   if (!xmlUrl) {
+    console.error("URL do XML não configurada");
     const error = new Error("URL do XML não configurada");
     if (onError) onError(error);
     return {
@@ -59,6 +67,7 @@ export const importXmlData = async (
     return null;
   }
   
+  console.log('Iniciando importação de dados XML de:', xmlUrl);
   isImportInProgress = true;
   
   try {
@@ -77,10 +86,12 @@ export const importXmlData = async (
     });
     
     if (!response.ok) {
+      console.error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
       throw new Error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
     }
     
     const xmlContent = await response.text();
+    console.log('XML recebido com sucesso. Tamanho:', xmlContent.length, 'bytes');
     
     // For debugging, show a sample of the XML content
     if (process.env.NODE_ENV !== 'production') {
@@ -90,6 +101,8 @@ export const importXmlData = async (
     const result = await parseVehiclesXml(xmlContent);
     
     if (result.success && result.vehicles) {
+      console.log(`Importação bem-sucedida: ${result.vehicles.length} veículos`);
+      
       // Save to localStorage
       saveVehiclesToLocalStorage(result.vehicles);
       
@@ -105,6 +118,8 @@ export const importXmlData = async (
         });
       }
     } else {
+      console.error('Falha na importação XML:', result.message, result.errors);
+      
       if (onError) {
         onError(new Error(result.message));
       }

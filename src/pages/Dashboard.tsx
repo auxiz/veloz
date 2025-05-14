@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import AdminNavbar from '@/components/AdminNavbar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -8,21 +9,32 @@ import InventorySection from '@/components/dashboard/InventorySection';
 import TestingTools from '@/components/dashboard/TestingTools'; 
 import { useVehicleManagement } from '@/hooks/useVehicleManagement';
 import Footer from '@/components/Footer';
+import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('inventory');
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Get tab from URL query parameter or default to 'inventory'
+  const initialTab = searchParams.get('tab') || 'inventory';
+  const [activeTab, setActiveTab] = useState(initialTab);
+  
   const [xmlUrl, setXmlUrl] = useState(() => {
     return localStorage.getItem('xmlUrlConfig') || "";
   });
+  
   const [showTestTools, setShowTestTools] = useState(() => {
     // Only show test tools in development or if explicitly enabled
     return process.env.NODE_ENV !== 'production' || localStorage.getItem('showTestTools') === 'true';
   });
 
   useEffect(() => {
+    console.log('Dashboard montado. Tab ativo:', activeTab);
+    console.log('XML URL atual:', xmlUrl);
+    
     // Initialize from localStorage if available
     const savedUrl = localStorage.getItem('xmlUrlConfig');
     if (savedUrl) {
+      console.log('URL carregada do localStorage:', savedUrl);
       setXmlUrl(savedUrl);
     }
     
@@ -33,12 +45,28 @@ const Dashboard = () => {
         const newValue = !showTestTools;
         setShowTestTools(newValue);
         localStorage.setItem('showTestTools', String(newValue));
+        console.log('Ferramentas de teste:', newValue ? 'ativadas' : 'desativadas');
       }
     };
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showTestTools]);
+  }, [showTestTools, activeTab]);
+
+  // Update URL when tab changes
+  useEffect(() => {
+    if (activeTab) {
+      setSearchParams({ tab: activeTab });
+    }
+  }, [activeTab, setSearchParams]);
+
+  // Update active tab when URL changes
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab');
+    if (tabFromUrl && tabFromUrl !== activeTab) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [searchParams, activeTab]);
 
   const { 
     vehicles, 
@@ -57,8 +85,14 @@ const Dashboard = () => {
   };
 
   const handleXmlUrlChange = (url: string) => {
+    console.log('URL XML alterada para:', url);
     setXmlUrl(url);
     localStorage.setItem('xmlUrlConfig', url);
+    
+    toast({
+      title: "URL XML Atualizada",
+      description: "A configuração da URL de importação foi atualizada."
+    });
   };
   
   return (
@@ -126,7 +160,7 @@ const Dashboard = () => {
         {/* Small indicator for test tools shortcut */}
         {process.env.NODE_ENV !== 'production' && (
           <div className="text-xs text-gray-500 mt-4 text-center">
-            Press Alt+T to {showTestTools ? 'hide' : 'show'} testing tools
+            Pressione Alt+T para {showTestTools ? 'esconder' : 'mostrar'} as ferramentas de teste
           </div>
         )}
       </main>

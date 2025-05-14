@@ -55,10 +55,14 @@ export function useXmlImport(xmlUrl: string, onImportComplete: (result: XmlImpor
         ? `https://corsproxy.io/?${encodeURIComponent(xmlUrl)}`
         : xmlUrl;
         
-      console.log(`Fetching XML from: ${useCorsBypass ? 'CORS proxy -> ' : ''}${xmlUrl}`);
+      console.log(`Tentando buscar XML de: ${useCorsBypass ? 'CORS proxy -> ' : ''}${xmlUrl}`);
 
       // Fetch the XML content from the URL
-      const response = await fetch(targetUrl);
+      const response = await fetch(targetUrl, {
+        headers: {
+          'Accept': 'application/xml, text/xml, */*'
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`Falha ao buscar XML: ${response.status} ${response.statusText}`);
@@ -80,13 +84,11 @@ export function useXmlImport(xmlUrl: string, onImportComplete: (result: XmlImpor
       });
       
       // For debugging, show a sample of the XML content
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('XML Content (sample):', xmlContent.substring(0, 200) + '...');
-        console.log('XML Structure:', {
-          rootElement: rootElement.tagName,
-          childElements: Array.from(rootElement.children).map(el => el.tagName)
-        });
-      }
+      console.log('XML recebido com sucesso. Amostra:', xmlContent.substring(0, 200) + '...');
+      console.log('Estrutura XML:', {
+        rootElement: rootElement.tagName,
+        childElements: Array.from(rootElement.children).map(el => el.tagName)
+      });
       
       // Parse the XML content
       const result = await parseVehiclesXml(xmlContent);
@@ -123,6 +125,7 @@ export function useXmlImport(xmlUrl: string, onImportComplete: (result: XmlImpor
       
       const errorMessage = error instanceof Error ? error.message : String(error);
       setErrors([errorMessage]);
+      console.error('Erro detalhado ao importar XML:', error);
       
       // Provide more helpful error messages for common issues
       let description = "Ocorreu um erro ao processar os dados XML.";
@@ -130,7 +133,7 @@ export function useXmlImport(xmlUrl: string, onImportComplete: (result: XmlImpor
       if (errorMessage.includes('CORS') || errorMessage.includes('Failed to fetch') || errorMessage.includes('Network Error')) {
         const useCorsBypass = localStorage.getItem('useCorsBypass') === 'true';
         description = useCorsBypass 
-          ? "Erro de CORS persistiu mesmo com proxy. Tente um arquivo XML hospedado no mesmo domínio."
+          ? "Erro de CORS persistiu mesmo com proxy. Tente um arquivo XML hospedado no mesmo domínio ou use um arquivo local."
           : "Erro de CORS detectado. Ative a opção 'Usar proxy CORS' nas configurações e tente novamente.";
       }
       
@@ -139,8 +142,6 @@ export function useXmlImport(xmlUrl: string, onImportComplete: (result: XmlImpor
         description: description,
         variant: "destructive"
       });
-      
-      console.error('Erro ao importar dados XML:', error);
     }
   };
 

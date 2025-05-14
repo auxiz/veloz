@@ -5,8 +5,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Check, LinkIcon } from 'lucide-react';
+import { Check, LinkIcon, ShieldAlert, Globe } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface XmlUrlConfigurationProps {
   onUrlChange: (url: string) => void;
@@ -20,6 +26,10 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
   const [useCorsBypass, setUseCorsBypass] = useState(() => {
     return localStorage.getItem('useCorsBypass') === 'true';
   });
+
+  useEffect(() => {
+    console.log('XmlUrlConfiguration montado. URL atual:', currentUrl);
+  }, [currentUrl]);
 
   const handleSave = () => {
     if (!xmlUrl || !xmlUrl.trim()) {
@@ -45,6 +55,8 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
         title: "URL Salva",
         description: "A URL do XML foi salva com sucesso.",
       });
+      
+      console.log('URL salva com sucesso:', xmlUrl, 'CORS bypass:', useCorsBypass);
     } catch (e) {
       toast({
         title: "URL Inválida",
@@ -57,6 +69,49 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
   const handleCorsToggle = (checked: boolean) => {
     setUseCorsBypass(checked);
     localStorage.setItem('useCorsBypass', checked.toString());
+    console.log('CORS bypass alterado para:', checked);
+  };
+
+  const testConnection = () => {
+    if (!xmlUrl) return;
+    
+    const testUrl = useCorsBypass
+      ? `https://corsproxy.io/?${encodeURIComponent(xmlUrl)}`
+      : xmlUrl;
+    
+    toast({
+      title: "Testando conexão",
+      description: "Aguarde enquanto testamos a conexão com o servidor XML...",
+    });
+    
+    console.log('Testando conexão com:', testUrl);
+    
+    fetch(testUrl, {
+      headers: {
+        'Accept': 'application/xml, text/xml, */*'
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          toast({
+            title: "Conexão bem-sucedida",
+            description: "A URL do XML está acessível.",
+          });
+        } else {
+          toast({
+            title: "Falha na conexão",
+            description: `Erro ${response.status}: ${response.statusText}`,
+            variant: "destructive"
+          });
+        }
+      })
+      .catch(error => {
+        toast({
+          title: "Erro de conexão",
+          description: `${error.message}. Tente ativar a opção de proxy CORS.`,
+          variant: "destructive"
+        });
+      });
   };
 
   return (
@@ -84,11 +139,27 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
           
           <div className="flex items-center justify-between bg-gray-900 p-3 rounded-md">
             <div className="space-y-1">
-              <Label htmlFor="use-cors-bypass" className="font-medium text-sm text-gray-300">
-                Usar proxy CORS
-              </Label>
+              <div className="flex items-center gap-1.5">
+                <ShieldAlert className="h-4 w-4 text-veloz-yellow" />
+                <Label htmlFor="use-cors-bypass" className="font-medium text-sm text-gray-300">
+                  Usar proxy CORS
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full p-0 text-gray-400">
+                        ?
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>Ative esta opção se você receber erros CORS ou "Failed to fetch". 
+                      Isso encaminhará sua solicitação através de um proxy para contornar restrições de CORS.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className="text-xs text-gray-400">
-                Ative esta opção se estiver enfrentando erros "Failed to fetch" ou "CORS"
+                Ative se encontrar erros "Failed to fetch" ou "CORS"
               </p>
             </div>
             <Switch 
@@ -96,6 +167,18 @@ const XmlUrlConfiguration: React.FC<XmlUrlConfigurationProps> = ({ onUrlChange, 
               checked={useCorsBypass}
               onCheckedChange={handleCorsToggle}
             />
+          </div>
+          
+          <div className="flex justify-end">
+            <Button 
+              onClick={testConnection}
+              variant="outline"
+              size="sm"
+              className="text-xs flex items-center gap-1.5"
+            >
+              <Globe className="h-3.5 w-3.5" />
+              Testar conexão
+            </Button>
           </div>
           
           <div className="text-sm text-gray-400">

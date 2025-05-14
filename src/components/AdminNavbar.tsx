@@ -28,7 +28,10 @@ const AdminNavbar = () => {
           <Button 
             variant="veloz-outline" 
             size="sm"
-            onClick={() => navigate('/admin')}
+            onClick={() => {
+              console.log("Navegando para /admin");
+              navigate('/admin');
+            }}
             className="font-bold flex items-center gap-1"
           >
             <LayoutDashboard size={16} />
@@ -38,7 +41,10 @@ const AdminNavbar = () => {
           <Button 
             variant="veloz-outline"
             size="sm"
-            onClick={() => navigate('/admin')}
+            onClick={() => {
+              console.log("Navegando para /admin?tab=inventory");
+              navigate('/admin?tab=inventory');
+            }}
             className="font-bold flex items-center gap-1"
           >
             <Package size={16} />
@@ -48,7 +54,10 @@ const AdminNavbar = () => {
           <Button 
             variant="veloz-outline"
             size="sm"
-            onClick={() => window.alert('Settings page not yet implemented')}
+            onClick={() => {
+              console.log("Configurações ainda não implementadas");
+              window.alert('Página de configurações ainda não implementada');
+            }}
             className="font-bold flex items-center gap-1"
           >
             <Settings size={16} />
@@ -58,7 +67,10 @@ const AdminNavbar = () => {
           <Button 
             variant="veloz"
             size="sm"
-            onClick={() => navigate('/')}
+            onClick={() => {
+              console.log("Navegando para /");
+              navigate('/');
+            }}
             className="font-bold flex items-center gap-1"
           >
             <Home size={16} />
