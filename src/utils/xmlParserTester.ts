@@ -1,5 +1,5 @@
 
-import { parseVehiclesXml } from './xmlParser';
+import { parseVehiclesXml } from './xml';
 import { XmlImportResult } from '../types/vehicle';
 
 /**

@@ -1,5 +1,5 @@
 
-import { parseVehiclesXml } from './xmlParser';
+import { parseVehiclesXml } from './xml';
 import { XmlImportResult, Vehicle } from '@/types/vehicle';
 
 // Store the last import time

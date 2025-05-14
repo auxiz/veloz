@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { parseVehiclesXml } from '@/utils/xmlParser';
+import { parseVehiclesXml } from '@/utils/xml';
 import { XmlImportResult } from '@/types/vehicle';
 import { getLastImportTime } from '@/utils/scheduledXmlImport';
 
