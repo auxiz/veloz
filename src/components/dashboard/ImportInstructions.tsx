@@ -50,8 +50,14 @@ const ImportInstructions: React.FC<ImportInstructionsProps> = ({ xmlUrl }) => {
                 Formato XML esperado
               </AccordionTrigger>
               <AccordionContent className="text-sm">
-                <p className="mb-2">O arquivo XML deve conter elementos &lt;vehicle&gt; com campos como:</p>
-                <p className="text-gray-400">brand, model, year, price, mileage, fuelType, transmission, color, photos, description, features, status</p>
+                <p className="mb-2">O sistema suporta diversos formatos de XML, incluindo:</p>
+                <ul className="list-disc list-inside text-gray-400">
+                  <li>Tags &lt;vehicle&gt; ou &lt;item&gt;</li>
+                  <li>Tags &lt;AD&gt; (comum em feeds de anúncios)</li>
+                  <li>Campos em minúsculas e MAIÚSCULAS</li>
+                </ul>
+                <p className="mt-2 mb-1">Campos comuns suportados:</p>
+                <p className="text-gray-400 text-xs">brand/MAKE, model/MODEL, year/YEAR, price/PRICE, mileage/KM, fuelType/FUEL, transmission/GEAR, color/COLOR, photos/IMAGES, description/DESCRIPTION</p>
               </AccordionContent>
             </AccordionItem>
           </Accordion>

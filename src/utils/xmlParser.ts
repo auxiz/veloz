@@ -43,6 +43,13 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
       };
     }
     
+    // Log the root element to help with debugging
+    const rootElement = xmlDoc.documentElement;
+    logParsingDetails("Root element detected", {
+      tagName: rootElement.tagName,
+      childCount: rootElement.childNodes.length
+    });
+    
     // Get all potential vehicle nodes with flexible detection
     // First try standard <vehicle> tag
     let vehicleNodes = xmlDoc.querySelectorAll('vehicle');
@@ -50,7 +57,7 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
     // If no vehicle tags found, try to detect alternative structures
     if (!vehicleNodes || vehicleNodes.length === 0) {
       // Try common alternatives like item, product, car, entry
-      const alternativeTags = ['item', 'product', 'car', 'entry', 'veiculo', 'carro'];
+      const alternativeTags = ['item', 'product', 'car', 'entry', 'veiculo', 'carro', 'AD', 'ad'];
       
       for (const tag of alternativeTags) {
         vehicleNodes = xmlDoc.querySelectorAll(tag);
@@ -68,9 +75,15 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
           const hasVehicleAttributes = 
             node.querySelector('brand') || 
             node.querySelector('model') || 
-            node.querySelector('make') ||
+            node.querySelector('make') || 
             node.querySelector('marca') ||
-            node.querySelector('modelo');
+            node.querySelector('modelo') ||
+            // Add uppercase variants for AD format
+            node.querySelector('BRAND') ||
+            node.querySelector('MODEL') ||
+            node.querySelector('MAKE') ||
+            node.querySelector('TITLE') ||
+            node.querySelector('YEAR');
             
           return hasVehicleAttributes;
         });
@@ -106,7 +119,11 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
       try {
         // Helper function to get text from various possible node names
         const getNodeTextWithAlternatives = (nodeNames: string[], defaultValue: string = '') => {
-          for (const name of nodeNames) {
+          // First check for uppercase variants (for AD format)
+          const upperNodeNames = nodeNames.map(name => name.toUpperCase());
+          const allNodeNames = [...nodeNames, ...upperNodeNames];
+          
+          for (const name of allNodeNames) {
             const node = vehicleNode.querySelector(name);
             if (node && node.textContent) {
               return node.textContent;
@@ -116,24 +133,45 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
         };
         
         const getNodeNumberWithAlternatives = (nodeNames: string[], defaultValue: number = 0) => {
-          const text = getNodeTextWithAlternatives(nodeNames, String(defaultValue));
-          const number = parseFloat(text);
+          // Include uppercase variants
+          const upperNodeNames = nodeNames.map(name => name.toUpperCase());
+          const allNodeNames = [...nodeNames, ...upperNodeNames];
+          
+          const text = getNodeTextWithAlternatives(allNodeNames, String(defaultValue));
+          // Clean up number format (remove currency symbols, etc)
+          const cleanNumber = text.replace(/[^\d.,]/g, '').replace(',', '.');
+          const number = parseFloat(cleanNumber);
           return isNaN(number) ? defaultValue : number;
         };
         
-        const brand = getNodeTextWithAlternatives(['brand', 'make', 'manufacturer', 'marca']);
-        const model = getNodeTextWithAlternatives(['model', 'name', 'title', 'modelo']);
+        // Special handling for TITLE tag (common in AD format)
+        const title = getNodeTextWithAlternatives(['TITLE', 'title']);
+        
+        // Try to extract brand and model from title if available
+        let extractedBrand = '';
+        let extractedModel = '';
+        if (title) {
+          // Simple extraction - first word could be brand, rest could be model
+          const titleParts = title.trim().split(' ');
+          if (titleParts.length > 0) {
+            extractedBrand = titleParts[0];
+            extractedModel = titleParts.slice(1).join(' ');
+          }
+        }
+        
+        const brand = getNodeTextWithAlternatives(['brand', 'make', 'manufacturer', 'marca']) || extractedBrand;
+        const model = getNodeTextWithAlternatives(['model', 'name', 'title', 'modelo']) || extractedModel;
         const year = getNodeNumberWithAlternatives(['year', 'modelYear', 'ano']);
         const price = getNodeNumberWithAlternatives(['price', 'value', 'cost', 'preco', 'valor']);
         const mileage = getNodeNumberWithAlternatives(['mileage', 'odometer', 'km', 'kilometragem', 'quilometragem'], 0);
         const fuelType = getNodeTextWithAlternatives(['fuelType', 'fuel', 'gas', 'combustivel']);
-        const transmission = getNodeTextWithAlternatives(['transmission', 'gearbox', 'cambio']);
+        const transmission = getNodeTextWithAlternatives(['transmission', 'gearbox', 'cambio', 'gear']);
         const color = getNodeTextWithAlternatives(['color', 'exteriorColor', 'cor', 'colorExterno']);
         
         // Get photos with various possible structures
         const getNodePhotos = () => {
-          // First try direct photo nodes
-          const photoNodes = vehicleNode.querySelectorAll('photo, image, picture, img, imagem, foto');
+          // First try direct photo nodes - include uppercase variants
+          const photoNodes = vehicleNode.querySelectorAll('photo, image, picture, img, imagem, foto, PHOTO, IMAGE, PICTURES, IMAGES');
           if (photoNodes && photoNodes.length > 0) {
             const photos: string[] = [];
             photoNodes.forEach(photoNode => {
@@ -151,7 +189,7 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
           }
           
           // If no direct nodes, look for a single image or comma-separated list
-          const singleImageNode = vehicleNode.querySelector('images, photos, pictures, fotos, imagens');
+          const singleImageNode = vehicleNode.querySelector('images, photos, pictures, fotos, imagens, IMAGES, PHOTOS');
           if (singleImageNode && singleImageNode.textContent) {
             // Check if it's comma-separated
             const content = singleImageNode.textContent;
@@ -166,8 +204,8 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
         };
         
         const getNodeFeatures = () => {
-          // Try direct feature nodes
-          const featureNodes = vehicleNode.querySelectorAll('feature, option, equipment, opcional, caracteristica');
+          // Try direct feature nodes - include uppercase variants
+          const featureNodes = vehicleNode.querySelectorAll('feature, option, equipment, opcional, caracteristica, FEATURE, OPTION, EQUIPMENT');
           if (featureNodes && featureNodes.length > 0) {
             const features: string[] = [];
             featureNodes.forEach(featureNode => {
@@ -179,7 +217,7 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
           }
           
           // If no direct nodes, look for a single features node with comma-separated list
-          const singleFeaturesNode = vehicleNode.querySelector('features, options, equipments, opcionais, caracteristicas');
+          const singleFeaturesNode = vehicleNode.querySelector('features, options, equipments, opcionais, caracteristicas, FEATURES, OPTIONS');
           if (singleFeaturesNode && singleFeaturesNode.textContent) {
             // Check if it's comma-separated
             const content = singleFeaturesNode.textContent;
@@ -195,12 +233,12 @@ export async function parseVehiclesXml(xmlContent: string): Promise<XmlImportRes
         
         // Get description with alternatives
         const description = getNodeTextWithAlternatives([
-          'description', 'details', 'comments', 'descricao', 'detalhes', 'comentarios'
+          'description', 'details', 'comments', 'descricao', 'detalhes', 'comentarios', 'DESCRIPTION'
         ]);
         
         // Get status with alternatives
         const statusText = getNodeTextWithAlternatives([
-          'status', 'availability', 'state', 'disponibilidade', 'estado'
+          'status', 'availability', 'state', 'disponibilidade', 'estado', 'STATUS'
         ], 'available').toLowerCase();
         
         // Map the status text to one of our allowed values

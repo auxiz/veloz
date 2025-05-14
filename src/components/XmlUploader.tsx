@@ -6,9 +6,10 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { parseVehiclesXml } from '@/utils/xmlParser';
 import { XmlImportResult } from '@/types/vehicle';
-import { FileUp, Clock, AlertTriangle } from 'lucide-react';
+import { FileUp, Clock, AlertTriangle, Info } from 'lucide-react';
 import { getLastImportTime, isImportNeeded } from '@/utils/scheduledXmlImport';
 import { format } from 'date-fns';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface XmlUploaderProps {
   onImportComplete: (result: XmlImportResult) => void;
@@ -20,6 +21,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
+  const [xmlInfo, setXmlInfo] = useState<{structure?: string, rootElement?: string}>({});
   const [lastImport, setLastImport] = useState<Date | null>(null);
   const [nextImport, setNextImport] = useState<Date | null>(null);
 
@@ -56,6 +58,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
       setIsLoading(true);
       setErrors([]);
       setProgress(10);
+      setXmlInfo({});
 
       // Check if we should use CORS proxy
       const useCorsBypass = localStorage.getItem('useCorsBypass') === 'true';
@@ -75,9 +78,25 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
       setProgress(50);
       const xmlContent = await response.text();
       
+      // For debugging, analyze the XML structure
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlContent, "text/xml");
+      const rootElement = xmlDoc.documentElement;
+      
+      setXmlInfo({
+        rootElement: rootElement.tagName,
+        structure: `Root: <${rootElement.tagName}>, Children: ${Array.from(rootElement.children).map(
+          child => `<${child.tagName}>`
+        ).join(', ').substring(0, 100)}...`
+      });
+      
       // For debugging, show a sample of the XML content
       if (process.env.NODE_ENV !== 'production') {
         console.log('XML Content (sample):', xmlContent.substring(0, 200) + '...');
+        console.log('XML Structure:', {
+          rootElement: rootElement.tagName,
+          childElements: Array.from(rootElement.children).map(el => el.tagName)
+        });
       }
       
       // Parse the XML content
@@ -185,6 +204,29 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
             </div>
           </div>
 
+          {xmlInfo.structure && (
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="xml-structure">
+                  <AccordionTrigger className="flex items-center gap-2 text-sm text-veloz-yellow">
+                    <Info className="h-4 w-4" />
+                    Estrutura XML Detectada
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-xs text-gray-300">
+                      <p className="mb-1"><strong>Elemento Raiz:</strong> {xmlInfo.rootElement}</p>
+                      <p className="mb-1"><strong>Estrutura:</strong> {xmlInfo.structure}</p>
+                      <p className="mt-2 text-gray-400">
+                        Se estiver tendo problemas na importação, verifique se a estrutura do XML corresponde 
+                        ao formato esperado pelo sistema.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          )}
+
           {errors.length > 0 && (
             <div className="bg-red-900/20 border border-red-700 text-red-200 p-3 rounded">
               <h4 className="flex items-center gap-2 font-semibold mb-2">
@@ -197,7 +239,7 @@ const XmlUploader: React.FC<XmlUploaderProps> = ({ onImportComplete, xmlUrl }) =
                 ))}
               </ul>
               <div className="mt-3 pt-3 border-t border-red-700/50 text-xs">
-                <p>Dica: Se o erro for relacionado a CORS, tente ativar a opção "Usar proxy CORS" nas configurações.</p>
+                <p>Dica: Se o erro for relacionado a XML, verifique a estrutura do arquivo. O sistema agora suporta tags &lt;AD&gt; e campos em maiúsculas.</p>
               </div>
             </div>
           )}
